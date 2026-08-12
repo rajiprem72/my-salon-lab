@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <base target="_top">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>The Salon Lab - Admin</title>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    body {
+
+      margin: 0;
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background: #f4f4f4;
+
+      color: #222;
+
+    }
+
+
+    .container {
+
+      max-width: 850px;
+
+      margin: auto;
+
+      padding: 18px;
+
+    }
+
+
+    /* =====================================================
+       HEADER
+    ====================================================== */
+
+    .header {
+
+      background: #111;
+
+      color: white;
+
+      padding: 22px;
+
+      border-radius: 18px;
+
+      text-align: center;
+
+      margin-bottom: 18px;
+
+    }
+
+
+    .logo {
+
+      font-size: 30px;
+
+      font-weight: bold;
+
+    }
+
+
+    .subtitle {
+
+      margin-top: 6px;
+
+      opacity: .75;
+
+      font-size: 15px;
+
+    }
+
+
+    /* =====================================================
+       CARDS
+    ====================================================== */
+
+    .card {
+
+      background: white;
+
+      border-radius: 18px;
+
+      padding: 20px;
+
+      margin-bottom: 16px;
+
+      box-shadow:
+        0 3px 15px
+        rgba(0,0,0,.07);
+
+    }
+
+
+    .card-title {
+
+      font-size: 21px;
+
+      font-weight: bold;
+
+      margin-bottom: 15px;
+
+    }
+
+
+    /* =====================================================
+       SERVICE POSITIONS
+    ====================================================== */
+
+    .position-options {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(6, 1fr);
+
+      gap: 8px;
+
+    }
+
+
+    .position-button {
+
+      padding: 14px 5px;
+
+      border: 1px solid #ddd;
+
+      background: white;
+
+      border-radius: 10px;
+
+      font-size: 18px;
+
+      cursor: pointer;
+
+    }
+
+
+    .position-button.selected {
+
+      background: #111;
+
+      color: white;
+
+      border-color: #111;
+
+    }
+
+
+    .save-button {
+
+      width: 100%;
+
+      margin-top: 14px;
+
+      padding: 15px;
+
+      border: none;
+
+      border-radius: 10px;
+
+      background: #198754;
+
+      color: white;
+
+      font-size: 17px;
+
+      cursor: pointer;
+
+    }
+
+
+    /* =====================================================
+       ADD CUSTOMER
+    ====================================================== */
+
+    input {
+
+      width: 100%;
+
+      padding: 15px;
+
+      margin: 6px 0;
+
+      border: 1px solid #ddd;
+
+      border-radius: 10px;
+
+      font-size: 17px;
+
+    }
+
+
+    .add-button {
+
+      width: 100%;
+
+      padding: 15px;
+
+      margin-top: 8px;
+
+      border: none;
+
+      border-radius: 10px;
+
+      background: #111;
+
+      color: white;
+
+      font-size: 17px;
+
+      cursor: pointer;
+
+    }
+
+
+    .note {
+
+      font-size: 13px;
+
+      color: #777;
+
+      margin-top: 8px;
+
+    }
+
+
+    /* =====================================================
+       SUMMARY
+    ====================================================== */
+
+    .summary {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 10px;
+
+    }
+
+
+    .summary-box {
+
+      text-align: center;
+
+      padding: 15px 5px;
+
+      background: #f5f5f5;
+
+      border-radius: 12px;
+
+    }
+
+
+    .summary-number {
+
+      font-size: 28px;
+
+      font-weight: bold;
+
+    }
+
+
+    .summary-label {
+
+      color: #777;
+
+      font-size: 13px;
+
+      margin-top: 4px;
+
+    }
+
+
+    /* =====================================================
+       CUSTOMER
+    ====================================================== */
+
+    .customer {
+
+      border: 1px solid #e2e2e2;
+
+      border-radius: 15px;
+
+      padding: 17px;
+
+      margin-top: 12px;
+
+    }
+
+
+    .customer.in-service {
+
+      border: 3px solid #198754;
+
+      background: #f8fff9;
+
+    }
+
+
+    .customer.not-present {
+
+      border: 2px solid #e0a800;
+
+      background: #fffaf0;
+
+    }
+
+
+    .customer-header {
+
+      display: flex;
+
+      justify-content:
+        space-between;
+
+      align-items: center;
+
+      gap: 10px;
+
+    }
+
+
+    .position {
+
+      font-size: 40px;
+
+      font-weight: bold;
+
+    }
+
+
+    .ticket {
+
+      font-size: 13px;
+
+      color: #777;
+
+      margin-top: 2px;
+
+    }
+
+
+    .customer-name {
+
+      font-size: 21px;
+
+      font-weight: bold;
+
+      margin-top: 10px;
+
+    }
+
+
+    .mobile {
+
+      color: #777;
+
+      margin-top: 5px;
+
+    }
+
+
+    .status {
+
+      margin-top: 10px;
+
+      font-weight: bold;
+
+    }
+
+
+    .session {
+
+      font-size: 13px;
+
+      margin-top: 7px;
+
+      color: #777;
+
+    }
+
+
+    /* =====================================================
+       ACTION BUTTONS
+    ====================================================== */
+
+    .actions {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 8px;
+
+      margin-top: 15px;
+
+    }
+
+
+    .action-button {
+
+      padding: 12px 5px;
+
+      border: none;
+
+      border-radius: 9px;
+
+      font-size: 14px;
+
+      cursor: pointer;
+
+      color: white;
+
+    }
+
+
+    .done-button {
+
+      background: #198754;
+
+    }
+
+
+    .absent-button {
+
+      background: #e0a800;
+
+      color: #222;
+
+    }
+
+
+    .cancel-button {
+
+      background: #dc3545;
+
+    }
+
+
+    .return-button {
+
+      background: #0d6efd;
+
+    }
+
+
+    /* =====================================================
+       SECTION HEADERS
+    ====================================================== */
+
+    .section-title {
+
+      font-size: 22px;
+
+      font-weight: bold;
+
+      margin-top: 5px;
+
+    }
+
+
+    .section-subtitle {
+
+      color: #777;
+
+      font-size: 14px;
+
+      margin-top: 4px;
+
+    }
+
+
+    /* =====================================================
+       EMPTY
+    ====================================================== */
+
+    .empty {
+
+      text-align: center;
+
+      padding: 35px 15px;
+
+      color: #777;
+
+      background: #fafafa;
+
+      border-radius: 12px;
+
+      margin-top: 10px;
+
+    }
+
+
+    /* =====================================================
+       REFRESH
+    ====================================================== */
+
+    .refresh-button {
+
+      width: 100%;
+
+      padding: 14px;
+
+      border: none;
+
+      border-radius: 10px;
+
+      background: #444;
+
+      color: white;
+
+      font-size: 16px;
+
+      cursor: pointer;
+
+    }
+
+
+    /* =====================================================
+       LOADING
+    ====================================================== */
+
+    .loading {
+
+      text-align: center;
+
+      padding: 25px;
+
+      color: #777;
+
+    }
+
+
+    /* =====================================================
+       MOBILE
+    ====================================================== */
+
+    @media (
+      max-width: 600px
+    ) {
+
+      .position-options {
+
+        grid-template-columns:
+          repeat(4, 1fr);
+
+      }
+
+
+      .summary {
+
+        grid-template-columns:
+          repeat(3, 1fr);
+
+      }
+
+
+      .actions {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .customer-header {
+
+        align-items:
+          flex-start;
+
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <div class="header">
+
+    <div class="logo">
+      ✂️ The Salon Lab
+    </div>
+
+    <div class="subtitle">
+      Admin Queue Dashboard
+    </div>
+
+    <div
+      id="today"
+      style="margin-top:10px;font-size:14px;">
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SERVICE POSITIONS
+  ====================================================== -->
+
+  <div class="card">
+
+    <div class="card-title">
+      Available Service Positions
+    </div>
+
+    <div class="section-subtitle">
+
+      Set how many staff members are available
+      for haircut service today.
+
+    </div>
+
+
+    <div
+      id="positionOptions"
+      class="position-options">
+
+      <button
+        class="position-button"
+        onclick="selectPositions(1)">
+        1
+      </button>
+
+      <button
+        class="position-button"
+        onclick="selectPositions(2)">
+        2
+      </button>
+
+      <button
+        class="position-button"
+        onclick="selectPositions(3)">
+        3
+      </button>
+
+      <button
+        class="position-button"
+        onclick="selectPositions(4)">
+        4
+      </button>
+
+      <button
+        class="position-button"
+        onclick="selectPositions(5)">
+        5
+      </button>
+
+      <button
+        class="position-button"
+        onclick="selectPositions(6)">
+        6
+      </button>
+
+    </div>
+
+
+    <button
+      class="save-button"
+      onclick="savePositions()">
+
+      Save Today's Service Capacity
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       ADD CUSTOMER
+  ====================================================== -->
+
+  <div class="card">
+
+    <div class="card-title">
+      ➕ Add Customer
+    </div>
+
+    <div class="section-subtitle">
+
+      Use this when the customer cannot scan the QR code.
+
+      Mobile number is optional.
+
+    </div>
+
+
+    <input
+      id="adminName"
+      type="text"
+      placeholder="Customer Name">
+
+
+    <input
+      id="adminMobile"
+      type="tel"
+      placeholder="Mobile Number (Optional)">
+
+
+    <button
+      class="add-button"
+      onclick="adminAddCustomer()">
+
+      Add Customer to Queue
+
+    </button>
+
+
+    <div
+      id="addMessage"
+      class="note">
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       SUMMARY
+  ====================================================== -->
+
+  <div class="card">
+
+    <div class="card-title">
+      Today's Summary
+    </div>
+
+
+    <div class="summary">
+
+      <div class="summary-box">
+
+        <div
+          id="total"
+          class="summary-number">
+          0
+        </div>
+
+        <div class="summary-label">
+          Total
+        </div>
+
+      </div>
+
+
+      <div class="summary-box">
+
+        <div
+          id="inService"
+          class="summary-number">
+          0
+        </div>
+
+        <div class="summary-label">
+          In Service
+        </div>
+
+      </div>
+
+
+      <div class="summary-box">
+
+        <div
+          id="waiting"
+          class="summary-number">
+          0
+        </div>
+
+        <div class="summary-label">
+          Waiting
+        </div>
+
+      </div>
+
+
+      <div class="summary-box">
+
+        <div
+          id="notPresent"
+          class="summary-number">
+          0
+        </div>
+
+        <div class="summary-label">
+          Not Present
+        </div>
+
+      </div>
+
+
+      <div class="summary-box">
+
+        <div
+          id="completed"
+          class="summary-number">
+          0
+        </div>
+
+        <div class="summary-label">
+          Completed
+        </div>
+
+      </div>
+
+
+      <div class="summary-box">
+
+        <div
+          id="cancelled"
+          class="summary-number">
+          0
+        </div>
+
+        <div class="summary-label">
+          Cancelled
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       REFRESH
+  ====================================================== -->
+
+  <button
+    class="refresh-button"
+    onclick="loadEverything()">
+
+    🔄 Refresh Queue
+
+  </button>
+
+
+  <!-- =====================================================
+       CURRENTLY IN SERVICE
+  ====================================================== -->
+
+  <div class="card">
+
+    <div class="section-title">
+      ✂️ Currently In Service
+    </div>
+
+    <div class="section-subtitle">
+
+      These customers are occupying today's
+      available service positions.
+
+    </div>
+
+
+    <div
+      id="serviceQueue">
+
+      <div class="loading">
+        Loading...
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       WAITING QUEUE
+  ====================================================== -->
+
+  <div class="card">
+
+    <div class="section-title">
+      ⏳ Waiting Queue
+    </div>
+
+    <div class="section-subtitle">
+
+      Customers waiting for the next available
+      service position.
+
+    </div>
+
+
+    <div
+      id="waitingQueue">
+
+      <div class="loading">
+        Loading...
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       NOT PRESENT
+  ====================================================== -->
+
+  <div class="card">
+
+    <div class="section-title">
+      ⚠️ Not Present
+    </div>
+
+    <div class="section-subtitle">
+
+      Customers who temporarily went away but
+      have not cancelled their visit.
+
+    </div>
+
+
+    <div
+      id="notPresentQueue">
+
+      <div class="empty">
+        No customers currently marked Not Present.
+      </div>
+
+    </div>
+
+  </div>
+
+
+</div>
+
+
+<script>
+
+
+// ========================================================
+// VARIABLES
+// ========================================================
+
+let selectedPositions = 1;
+
+let currentSettings = null;
+
+
+// ========================================================
+// SELECT SERVICE POSITIONS
+// ========================================================
+
+function selectPositions(number) {
+
+  selectedPositions =
+    Number(number);
+
+
+  document
+    .querySelectorAll(
+      ".position-button"
+    )
+    .forEach(
+      function(button) {
+
+        button.classList.remove(
+          "selected"
+        );
+
+      }
+    );
+
+
+  const buttons =
+    document.querySelectorAll(
+      ".position-button"
+    );
+
+
+  if (
+    buttons[number - 1]
+  ) {
+
+    buttons[number - 1]
+      .classList.add(
+        "selected"
+      );
+
+  }
+
+}
+
+
+// ========================================================
+// SAVE SERVICE POSITIONS
+// ========================================================
+
+function savePositions() {
+
+  if (
+    !selectedPositions
+  ) {
+
+    alert(
+      "Please select the number of service positions."
+    );
+
+    return;
+
+  }
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(settings) {
+
+        currentSettings =
+          settings;
+
+
+        selectedPositions =
+          Number(
+            settings.servicePositions
+          );
+
+
+        selectPositions(
+          selectedPositions
+        );
+
+
+        alert(
+          "Today's service capacity is now " +
+          selectedPositions + "."
+        );
+
+
+        loadEverything();
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        alert(
+          error.message ||
+          "Unable to save settings."
+        );
+
+      }
+    )
+
+    .setServicePositions(
+      selectedPositions
+    );
+
+}
+
+
+// ========================================================
+// ADD CUSTOMER
+// ========================================================
+
+function adminAddCustomer() {
+
+  const name =
+    document
+      .getElementById(
+        "adminName"
+      )
+      .value
+      .trim();
+
+
+  const mobile =
+    document
+      .getElementById(
+        "adminMobile"
+      )
+      .value
+      .trim();
+
+
+  if (!name) {
+
+    alert(
+      "Please enter the customer's name."
+    );
+
+    return;
+
+  }
+
+
+  const button =
+    document.querySelector(
+      ".add-button"
+    );
+
+
+  button.disabled = true;
+
+  button.innerText =
+    "Adding Customer...";
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        document
+          .getElementById(
+            "adminName"
+          )
+          .value = "";
+
+
+        document
+          .getElementById(
+            "adminMobile"
+          )
+          .value = "";
+
+
+        document
+          .getElementById(
+            "addMessage"
+          )
+          .innerText =
+          "✓ " +
+          result.name +
+          " added to the queue.";
+
+
+        button.disabled = false;
+
+        button.innerText =
+          "Add Customer to Queue";
+
+
+        loadEverything();
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        alert(
+          error.message ||
+          "Unable to add customer."
+        );
+
+
+        button.disabled = false;
+
+        button.innerText =
+          "Add Customer to Queue";
+
+      }
+    )
+
+    .adminAddCustomer(
+      name,
+      mobile
+    );
+
+}
+
+
+// ========================================================
+// LOAD EVERYTHING
+// ========================================================
+
+function loadEverything() {
+
+  loadQueue();
+
+  loadSummary();
+
+  loadSettings();
+
+}
+
+
+// ========================================================
+// LOAD SETTINGS
+// ========================================================
+
+function loadSettings() {
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(settings) {
+
+        currentSettings =
+          settings;
+
+
+        selectedPositions =
+          Number(
+            settings.servicePositions
+          );
+
+
+        selectPositions(
+          selectedPositions
+        );
+
+      }
+    )
+
+    .getTodaySettings();
+
+}
+
+
+// ========================================================
+// LOAD QUEUE
+// ========================================================
+
+function loadQueue() {
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        renderQueue(
+          result
+        );
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        console.log(
+          error
+        );
+
+      }
+    )
+
+    .getQueue();
+
+}
+
+
+// ========================================================
+// RENDER QUEUE
+// ========================================================
+
+function renderQueue(result) {
+
+  const serviceContainer =
+    document.getElementById(
+      "serviceQueue"
+    );
+
+
+  const waitingContainer =
+    document.getElementById(
+      "waitingQueue"
+    );
+
+
+  const absentContainer =
+    document.getElementById(
+      "notPresentQueue"
+    );
+
+
+  serviceContainer.innerHTML =
+    "";
+
+
+  waitingContainer.innerHTML =
+    "";
+
+
+  absentContainer.innerHTML =
+    "";
+
+
+  const customers =
+    result.customers || [];
+
+
+  const servicePositions =
+    Number(
+      result.settings.servicePositions
+    );
+
+
+  /*
+   * -------------------------------------------------------
+   * IMPORTANT
+   *
+   * getQueue() returns customers in original order.
+   *
+   * First N eligible customers are the active
+   * service customers.
+   * -------------------------------------------------------
+   */
+
+
+  let serviceCustomers = [];
+
+  let waitingCustomers = [];
+
+  let absentCustomers = [];
+
+
+  let serviceCount = 0;
+
+
+  customers.forEach(
+    function(customer) {
+
+
+      if (
+        customer.status ===
+        "NOT_PRESENT"
+      ) {
+
+        absentCustomers.push(
+          customer
+        );
+
+        return;
+
+      }
+
+
+      if (
+        serviceCount <
+        servicePositions
+      ) {
+
+        serviceCustomers.push(
+          customer
+        );
+
+        serviceCount++;
+
+      }
+
+      else {
+
+        waitingCustomers.push(
+          customer
+        );
+
+      }
+
+    }
+  );
+
+
+  // -------------------------------------------------------
+  // SERVICE
+  // -------------------------------------------------------
+
+  if (
+    serviceCustomers.length === 0
+  ) {
+
+    serviceContainer.innerHTML =
+      "<div class='empty'>" +
+      "No customers currently in service." +
+      "</div>";
+
+  }
+
+  else {
+
+    serviceCustomers.forEach(
+      function(customer) {
+
+        serviceContainer
+          .appendChild(
+            createCustomerCard(
+              customer,
+              "service"
+            )
+          );
+
+      }
+    );
+
+  }
+
+
+  // -------------------------------------------------------
+  // WAITING
+  // -------------------------------------------------------
+
+  if (
+    waitingCustomers.length === 0
+  ) {
+
+    waitingContainer.innerHTML =
+      "<div class='empty'>" +
+      "No customers are waiting." +
+      "</div>";
+
+  }
+
+  else {
+
+    waitingCustomers.forEach(
+      function(customer) {
+
+        waitingContainer
+          .appendChild(
+            createCustomerCard(
+              customer,
+              "waiting"
+            )
+          );
+
+      }
+    );
+
+  }
+
+
+  // -------------------------------------------------------
+  // NOT PRESENT
+  // -------------------------------------------------------
+
+  if (
+    absentCustomers.length === 0
+  ) {
+
+    absentContainer.innerHTML =
+      "<div class='empty'>" +
+      "No customers currently marked Not Present." +
+      "</div>";
+
+  }
+
+  else {
+
+    absentCustomers.forEach(
+      function(customer) {
+
+        absentContainer
+          .appendChild(
+            createCustomerCard(
+              customer,
+              "not-present"
+            )
+          );
+
+      }
+    );
+
+  }
+
+}
+
+
+// ========================================================
+// CUSTOMER CARD
+// ========================================================
+
+function createCustomerCard(
+  customer,
+  type
+) {
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+
+  div.className =
+    "customer";
+
+
+  if (
+    type ===
+    "service"
+  ) {
+
+    div.classList.add(
+      "in-service"
+    );
+
+  }
+
+
+  if (
+    type ===
+    "not-present"
+  ) {
+
+    div.classList.add(
+      "not-present"
+    );
+
+  }
+
+
+  let html = "";
+
+
+  // ------------------------------------------------------
+  // HEADER
+  // ------------------------------------------------------
+
+  html +=
+    "<div class='customer-header'>";
+
+
+  html +=
+    "<div>" +
+
+    "<div class='position'>" +
+    "#" +
+    customer.position +
+    "</div>" +
+
+    "<div class='ticket'>" +
+    "Ticket #" +
+    customer.ticket +
+    "</div>" +
+
+    "</div>";
+
+
+  html +=
+    "</div>";
+
+
+  // ------------------------------------------------------
+  // NAME
+  // ------------------------------------------------------
+
+  html +=
+    "<div class='customer-name'>" +
+    escapeHtml(
+      customer.name
+    ) +
+    "</div>";
+
+
+  // ------------------------------------------------------
+  // MOBILE
+  // ------------------------------------------------------
+
+  if (
+    customer.mobile
+  ) {
+
+    html +=
+      "<div class='mobile'>" +
+      "📱 " +
+      escapeHtml(
+        customer.mobile
+      ) +
+      "</div>";
+
+  }
+
+  else {
+
+    html +=
+      "<div class='mobile'>" +
+      "📵 No mobile number" +
+      "</div>";
+
+  }
+
+
+  // ------------------------------------------------------
+  // SESSION
+  // ------------------------------------------------------
+
+  if (
+    customer.mobile
+  ) {
+
+    html +=
+      "<div class='session'>" +
+      "📱 Customer session available" +
+      "</div>";
+
+  }
+
+  else {
+
+    html +=
+      "<div class='session'>" +
+      "👤 Admin registered customer" +
+      "</div>";
+
+  }
+
+
+  // ------------------------------------------------------
+  // STATUS
+  // ------------------------------------------------------
+
+  if (
+    type ===
+    "service"
+  ) {
+
+    html +=
+      "<div class='status'>" +
+      "✂️ IN SERVICE" +
+      "</div>";
+
+  }
+
+  else if (
+    type ===
+    "waiting"
+  ) {
+
+    html +=
+      "<div class='status'>" +
+      "⏳ WAITING" +
+      "</div>";
+
+  }
+
+  else {
+
+    html +=
+      "<div class='status'>" +
+      "⚠️ NOT PRESENT" +
+      "</div>";
+
+  }
+
+
+  // ------------------------------------------------------
+  // ACTIONS
+  // ------------------------------------------------------
+
+  html +=
+    "<div class='actions'>";
+
+
+  if (
+    type ===
+    "service"
+  ) {
+
+    html +=
+      "<button " +
+      "class='action-button done-button' " +
+      "onclick=\"completeJob('" +
+      customer.id +
+      "')\">" +
+      "✓ JOB DONE" +
+      "</button>";
+
+
+    html +=
+      "<button " +
+      "class='action-button absent-button' " +
+      "onclick=\"markNotPresent('" +
+      customer.id +
+      "')\">" +
+      "⏭ NOT PRESENT" +
+      "</button>";
+
+
+    html +=
+      "<button " +
+      "class='action-button cancel-button' " +
+      "onclick=\"cancelCustomer('" +
+      customer.id +
+      "')\">" +
+      "✕ CANCEL" +
+      "</button>";
+
+  }
+
+
+  else if (
+    type ===
+    "waiting"
+  ) {
+
+    html +=
+      "<button " +
+      "class='action-button cancel-button' " +
+      "onclick=\"cancelCustomer('" +
+      customer.id +
+      "')\">" +
+      "✕ CANCEL" +
+      "</button>";
+
+  }
+
+
+  else if (
+    type ===
+    "not-present"
+  ) {
+
+    html +=
+      "<button " +
+      "class='action-button return-button' " +
+      "onclick=\"customerReturned('" +
+      customer.id +
+      "')\">" +
+      "↩ CUSTOMER RETURNED" +
+      "</button>";
+
+
+    html +=
+      "<button " +
+      "class='action-button cancel-button' " +
+      "onclick=\"cancelCustomer('" +
+      customer.id +
+      "')\">" +
+      "✕ CANCEL" +
+      "</button>";
+
+  }
+
+
+  html +=
+    "</div>";
+
+
+  div.innerHTML =
+    html;
+
+
+  return div;
+
+}
+
+
+// ========================================================
+// JOB DONE
+// ========================================================
+
+function completeJob(id) {
+
+  if (
+    !confirm(
+      "Confirm that this customer's haircut is completed?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function() {
+
+        loadEverything();
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        alert(
+          error.message ||
+          "Unable to complete job."
+        );
+
+        loadEverything();
+
+      }
+    )
+
+    .completeJob(
+      id
+    );
+
+}
+
+
+// ========================================================
+// NOT PRESENT
+// ========================================================
+
+function markNotPresent(id) {
+
+  if (
+    !confirm(
+      "Mark this customer as NOT PRESENT?\n\n" +
+      "The next eligible customer will be allowed " +
+      "to take the vacant service position."
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function() {
+
+        loadEverything();
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        alert(
+          error.message ||
+          "Unable to mark customer Not Present."
+        );
+
+        loadEverything();
+
+      }
+    )
+
+    .markNotPresent(
+      id
+    );
+
+}
+
+
+// ========================================================
+// CUSTOMER RETURNED
+// ========================================================
+
+function customerReturned(id) {
+
+  if (
+    !confirm(
+      "Confirm that this customer has returned to the salon?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function() {
+
+        loadEverything();
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        alert(
+          error.message ||
+          "Unable to return customer."
+        );
+
+        loadEverything();
+
+      }
+    )
+
+    .customerReturned(
+      id
+    );
+
+}
+
+
+// ========================================================
+// CANCEL CUSTOMER
+// ========================================================
+
+function cancelCustomer(id) {
+
+  if (
+    !confirm(
+      "Cancel this customer's queue entry for today?\n\n" +
+      "This customer will lose their queue position."
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function() {
+
+        loadEverything();
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        alert(
+          error.message ||
+          "Unable to cancel customer."
+        );
+
+        loadEverything();
+
+      }
+    )
+
+    .cancelCustomer(
+      id
+    );
+
+}
+
+
+// ========================================================
+// SUMMARY
+// ========================================================
+
+function loadSummary() {
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(data) {
+
+        document
+          .getElementById(
+            "total"
+          )
+          .innerText =
+          data.total;
+
+
+        document
+          .getElementById(
+            "inService"
+          )
+          .innerText =
+          data.inService;
+
+
+        document
+          .getElementById(
+            "waiting"
+          )
+          .innerText =
+          data.waiting;
+
+
+        document
+          .getElementById(
+            "notPresent"
+          )
+          .innerText =
+          data.notPresent;
+
+
+        document
+          .getElementById(
+            "completed"
+          )
+          .innerText =
+          data.completed;
+
+
+        document
+          .getElementById(
+            "cancelled"
+          )
+          .innerText =
+          data.cancelled;
+
+      }
+    )
+
+    .getDailySummary();
+
+}
+
+
+// ========================================================
+// ESCAPE HTML
+// ========================================================
+
+function escapeHtml(text) {
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+
+  div.textContent =
+    text || "";
+
+
+  return div.innerHTML;
+
+}
+
+
+// ========================================================
+// DATE
+// ========================================================
+
+function displayToday() {
+
+  const now =
+    new Date();
+
+
+  document
+    .getElementById(
+      "today"
+    )
+    .innerText =
+    now.toLocaleDateString(
+      "en-IN",
+      {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      }
+    );
+
+}
+
+
+// ========================================================
+// INITIALIZATION
+// ========================================================
+
+displayToday();
+
+loadEverything();
+
+
+// ========================================================
+// AUTOMATIC REFRESH
+// ========================================================
+
+setInterval(
+  loadEverything,
+  5000
+);
+
+</script>
+
+
+</body>
+
+</html>
