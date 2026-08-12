@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <base target="_top">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>My Salon Lab - Queue</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #222;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 22px;
+      padding: 28px 22px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.10);
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 34px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .scissors {
+      font-size: 34px;
+    }
+
+    .subtitle {
+      color: #777;
+      font-size: 17px;
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font-size: 18px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #111;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      margin-top: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #111;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+    }
+
+    .alert-button {
+      background: #444;
+    }
+
+    .queue-number {
+      font-size: 82px;
+      font-weight: bold;
+      line-height: 1;
+      margin: 25px 0 10px;
+    }
+
+    .queue-label {
+      font-size: 17px;
+      color: #777;
+    }
+
+    .ahead {
+      font-size: 21px;
+      margin: 15px 0;
+      font-weight: bold;
+    }
+
+    .waiting-message {
+      background: #f1f1f1;
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 20px;
+      font-size: 17px;
+      line-height: 1.5;
+    }
+
+    .turn-message {
+      background: #e9f8ee;
+      padding: 22px 15px;
+      border-radius: 15px;
+      margin-top: 20px;
+      font-size: 21px;
+      font-weight: bold;
+      line-height: 1.5;
+    }
+
+    .thank-you {
+      background: #e9f8ee;
+      padding: 25px 15px;
+      border-radius: 15px;
+      margin-top: 20px;
+      font-size: 20px;
+      line-height: 1.5;
+    }
+
+    .alert-status {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #777;
+    }
+
+    .update-time {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #999;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .error {
+      color: #c00;
+      margin-top: 12px;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <!-- =================================================
+         HEADER
+    ================================================== -->
+
+    <div class="logo">
+      <span class="scissors">✂️</span>
+      My Salon Lab
+    </div>
+
+    <div class="subtitle">
+      Welcome to My Salon Lab
+    </div>
+
+
+    <!-- =================================================
+         REGISTRATION
+    ================================================== -->
+
+    <div id="registration">
+
+      <h2>Join the Queue</h2>
+
+      <p>
+        Enter your details to get your place in today's queue.
+      </p>
+
+      <input
+        type="text"
+        id="name"
+        placeholder="Your Name"
+        autocomplete="name">
+
+      <input
+        type="tel"
+        id="mobile"
+        placeholder="Mobile Number"
+        maxlength="15"
+        autocomplete="tel">
+
+      <button
+        id="joinButton"
+        onclick="joinQueue()">
+
+        Join Queue
+
+      </button>
+
+      <div
+        id="errorMessage"
+        class="error">
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         CUSTOMER SESSION
+    ================================================== -->
+
+    <div
+      id="customerSession"
+      class="hidden">
+
+      <div>
+        Hello,
+        <strong id="customerName"></strong>
+      </div>
+
+
+      <div class="queue-label">
+        YOUR QUEUE POSITION
+      </div>
+
+
+      <div
+        id="queuePosition"
+        class="queue-number">
+
+        #-
+
+      </div>
+
+
+      <div
+        id="peopleAhead"
+        class="ahead">
+
+      </div>
+
+
+      <!-- WAITING -->
+
+      <div
+        id="waitingMessage"
+        class="waiting-message">
+
+        Please wait for your turn.
+
+      </div>
+
+
+      <!-- TURN -->
+
+      <div
+        id="turnMessage"
+        class="turn-message hidden">
+
+        🎉 YOUR TURN!<br><br>
+
+        Please proceed for your haircut.
+
+      </div>
+
+
+      <!-- COMPLETED -->
+
+      <div
+        id="completedMessage"
+        class="thank-you hidden">
+
+        Thank you for choosing
+        <strong>My Salon Lab</strong>.<br><br>
+
+        We hope to see you again!
+
+      </div>
+
+
+      <!-- ALERT BUTTON -->
+
+      <button
+        id="alertButton"
+        class="alert-button"
+        onclick="enableVibration()">
+
+        📳 Enable Turn Alert
+
+      </button>
+
+
+      <div
+        id="alertStatus"
+        class="alert-status">
+
+        Tap the button above to enable vibration
+        when it is your turn.
+
+      </div>
+
+
+      <div
+        id="updateTime"
+        class="update-time">
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+
+// =======================================================
+// VARIABLES
+// =======================================================
+
+let customerId = null;
+
+let pollingTimer = null;
+
+let previousPosition = null;
+
+let vibrationEnabled = false;
+
+
+// =======================================================
+// JOIN QUEUE
+// =======================================================
+
+function joinQueue() {
+
+  const name =
+    document
+      .getElementById("name")
+      .value
+      .trim();
+
+  const mobile =
+    document
+      .getElementById("mobile")
+      .value
+      .trim();
+
+
+  const error =
+    document.getElementById("errorMessage");
+
+  error.innerText = "";
+
+
+  if (!name) {
+
+    error.innerText =
+      "Please enter your name.";
+
+    return;
+  }
+
+
+  const cleanMobile =
+    mobile.replace(/\D/g, "");
+
+
+  if (cleanMobile.length < 10) {
+
+    error.innerText =
+      "Please enter a valid mobile number.";
+
+    return;
+  }
+
+
+  const button =
+    document.getElementById("joinButton");
+
+  button.disabled = true;
+
+  button.innerText =
+    "Joining Queue...";
+
+
+  google.script.run
+
+    .withSuccessHandler(function(result) {
+
+      if (!result.success) {
+
+        error.innerText =
+          "Unable to join the queue.";
+
+        button.disabled = false;
+
+        button.innerText =
+          "Join Queue";
+
+        return;
+      }
+
+
+      customerId =
+        result.id;
+
+
+      localStorage.setItem(
+        "mySalonLabSession",
+        customerId
+      );
+
+
+      localStorage.setItem(
+        "mySalonLabName",
+        result.name || name
+      );
+
+
+      showCustomerSession(
+        result
+      );
+
+    })
+
+
+    .withFailureHandler(function(err) {
+
+      error.innerText =
+        err.message ||
+        "Something went wrong.";
+
+      button.disabled = false;
+
+      button.innerText =
+        "Join Queue";
+
+    })
+
+
+    .registerCustomer(
+      name,
+      cleanMobile
+    );
+
+}
+
+
+// =======================================================
+// SHOW CUSTOMER SESSION
+// =======================================================
+
+function showCustomerSession(data) {
+
+  document
+    .getElementById("registration")
+    .classList.add("hidden");
+
+
+  document
+    .getElementById("customerSession")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("customerName")
+    .innerText =
+    data.name || data.customerName || "";
+
+
+  customerId =
+    data.id;
+
+
+  previousPosition =
+    Number(data.position);
+
+
+  updateQueueDisplay(
+    data,
+    false
+  );
+
+
+  startPolling();
+
+}
+
+
+// =======================================================
+// UPDATE QUEUE DISPLAY
+// =======================================================
+
+function updateQueueDisplay(
+  data,
+  allowVibration
+) {
+
+  if (!data.found && data.success === false) {
+    return;
+  }
+
+
+  // -----------------------------------------------------
+  // COMPLETED
+  // -----------------------------------------------------
+
+  if (data.done) {
+
+    document
+      .getElementById("queuePosition")
+      .innerText = "✓";
+
+
+    document
+      .getElementById("peopleAhead")
+      .innerText = "";
+
+
+    document
+      .getElementById("waitingMessage")
+      .classList.add("hidden");
+
+
+    document
+      .getElementById("turnMessage")
+      .classList.add("hidden");
+
+
+    document
+      .getElementById("completedMessage")
+      .classList.remove("hidden");
+
+
+    document
+      .getElementById("alertButton")
+      .classList.add("hidden");
+
+
+    document
+      .getElementById("alertStatus")
+      .classList.add("hidden");
+
+
+    return;
+  }
+
+
+  const newPosition =
+    Number(data.position);
+
+
+  document
+    .getElementById("queuePosition")
+    .innerText =
+    "#" + newPosition;
+
+
+  // -----------------------------------------------------
+  // PEOPLE AHEAD
+  // -----------------------------------------------------
+
+  if (newPosition === 1) {
+
+    document
+      .getElementById("peopleAhead")
+      .innerText =
+      "It is your turn!";
+
+  }
+
+  else if (newPosition === 2) {
+
+    document
+      .getElementById("peopleAhead")
+      .innerText =
+      "1 person is ahead of you";
+
+  }
+
+  else {
+
+    document
+      .getElementById("peopleAhead")
+      .innerText =
+      (newPosition - 1) +
+      " people are ahead of you";
+
+  }
+
+
+  // -----------------------------------------------------
+  // POSITION #1
+  // -----------------------------------------------------
+
+  if (newPosition === 1) {
+
+    document
+      .getElementById("waitingMessage")
+      .classList.add("hidden");
+
+
+    document
+      .getElementById("turnMessage")
+      .classList.remove("hidden");
+
+
+    // -----------------------------------------------
+    // VIBRATE ONLY WHEN POSITION CHANGES TO #1
+    // -----------------------------------------------
+
+    if (
+      allowVibration &&
+      previousPosition !== 1 &&
+      vibrationEnabled
+    ) {
+
+      vibrateForTurn();
+
+    }
+
+  }
+
+  else {
+
+    document
+      .getElementById("waitingMessage")
+      .classList.remove("hidden");
+
+
+    document
+      .getElementById("turnMessage")
+      .classList.add("hidden");
+
+  }
+
+
+  previousPosition =
+    newPosition;
+
+
+  document
+    .getElementById("updateTime")
+    .innerText =
+    "Queue updated just now";
+
+}
+
+
+// =======================================================
+// ENABLE VIBRATION
+// =======================================================
+
+function enableVibration() {
+
+  vibrationEnabled = true;
+
+
+  // Test vibration
+
+  if (
+    "vibrate" in navigator
+  ) {
+
+    navigator.vibrate(150);
+
+    document
+      .getElementById("alertStatus")
+      .innerText =
+      "✓ Turn vibration is enabled.";
+
+    document
+      .getElementById("alertButton")
+      .innerText =
+      "✓ Turn Alert Enabled";
+
+  }
+
+  else {
+
+    document
+      .getElementById("alertStatus")
+      .innerText =
+      "Your browser does not support vibration.";
+
+  }
+
+
+  localStorage.setItem(
+    "mySalonLabVibration",
+    "enabled"
+  );
+
+}
+
+
+// =======================================================
+// VIBRATION WHEN TURN ARRIVES
+// =======================================================
+
+function vibrateForTurn() {
+
+  if (
+    "vibrate" in navigator
+  ) {
+
+    navigator.vibrate([
+      300,
+      150,
+      300,
+      150,
+      600
+    ]);
+
+  }
+
+}
+
+
+// =======================================================
+// POLLING
+// =======================================================
+
+function startPolling() {
+
+  if (pollingTimer) {
+
+    clearInterval(
+      pollingTimer
+    );
+
+  }
+
+
+  // Check every 5 seconds
+
+  pollingTimer =
+    setInterval(
+      checkQueue,
+      5000
+    );
+
+
+  // Immediately check once
+
+  checkQueue();
+
+}
+
+
+// =======================================================
+// CHECK QUEUE
+// =======================================================
+
+function checkQueue() {
+
+  if (!customerId) {
+    return;
+  }
+
+
+  google.script.run
+
+    .withSuccessHandler(function(data) {
+
+      if (data && data.found) {
+
+        updateQueueDisplay(
+          data,
+          true
+        );
+
+      }
+
+    })
+
+    .withFailureHandler(function(error) {
+
+      console.log(
+        "Queue update error:",
+        error
+      );
+
+    })
+
+    .getCustomerStatus(
+      customerId
+    );
+
+}
+
+
+// =======================================================
+// RESTORE SESSION
+// =======================================================
+
+window.onload = function() {
+
+
+  // Restore vibration preference
+
+  if (
+    localStorage.getItem(
+      "mySalonLabVibration"
+    ) === "enabled"
+  ) {
+
+    vibrationEnabled = true;
+
+    document
+      .getElementById("alertStatus")
+      .innerText =
+      "✓ Turn vibration is enabled.";
+
+    document
+      .getElementById("alertButton")
+      .innerText =
+      "✓ Turn Alert Enabled";
+
+  }
+
+
+  // Restore customer session
+
+  const savedSession =
+    localStorage.getItem(
+      "mySalonLabSession"
+    );
+
+
+  if (!savedSession) {
+    return;
+  }
+
+
+  customerId =
+    savedSession;
+
+
+  google.script.run
+
+    .withSuccessHandler(function(data) {
+
+      if (
+        data &&
+        data.found
+      ) {
+
+        document
+          .getElementById("registration")
+          .classList.add("hidden");
+
+
+        document
+          .getElementById("customerSession")
+          .classList.remove("hidden");
+
+
+        document
+          .getElementById("customerName")
+          .innerText =
+          data.name || "";
+
+
+        previousPosition =
+          Number(data.position);
+
+
+        updateQueueDisplay(
+          data,
+          false
+        );
+
+
+        startPolling();
+
+      }
+
+      else {
+
+        // Session no longer valid
+
+        localStorage.removeItem(
+          "mySalonLabSession"
+        );
+
+      }
+
+    })
+
+
+    .withFailureHandler(function(error) {
+
+      console.log(error);
+
+    })
+
+
+    .getCustomerStatus(
+      savedSession
+    );
+
+};
+
+
+</script>
+
+</body>
+
+</html>
