@@ -388,6 +388,165 @@ let vibrationEnabled = false;
 let timer = null;
 
 let registrationTimer = null;
+
+// ========================================================
+// ONLINE REGISTRATION STATUS
+// ========================================================
+
+function checkRegistrationStatus() {
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(data) {
+
+        if (!data) {
+          return;
+        }
+
+
+        const statusBox =
+          document.getElementById(
+            "registrationStatus"
+          );
+
+
+        const registrationForm =
+          document.getElementById(
+            "registrationForm"
+          );
+
+
+        if (!statusBox ||
+            !registrationForm) {
+
+          return;
+
+        }
+
+
+        /*
+         * DAY CLOSED
+         *
+         * This has the highest priority.
+         */
+
+        if (
+          data.dayClosed === true
+        ) {
+
+          statusBox.className =
+            "registration-status registration-ended";
+
+
+          statusBox.innerHTML =
+
+            "🔴 <strong>Today's Online Registration is Closed.</strong>" +
+            "<br><br>" +
+            "Kindly visit us during the next available session." +
+            "<br><br>" +
+            "For assistance, please contact the shop." +
+            "<br>" +
+            '<a class="shop-phone" href="tel:9444653143">' +
+            "📞 9444653143" +
+            "</a>";
+
+
+          statusBox.classList.remove(
+            "hidden"
+          );
+
+
+          registrationForm.classList.add(
+            "hidden"
+          );
+
+
+          return;
+
+        }
+
+
+        /*
+         * ONLINE REGISTRATION OFF
+         */
+
+        if (
+          data.onlineRegistration !== true
+        ) {
+
+          statusBox.className =
+            "registration-status registration-closed";
+
+
+          statusBox.innerHTML =
+
+            "🟡 <strong>Online Registration is currently closed.</strong>" +
+            "<br><br>" +
+            "Kindly wait till the Admin allows Online Registration." +
+            "<br><br>" +
+            "For assistance, please contact the shop." +
+            "<br>" +
+            '<a class="shop-phone" href="tel:9444653143">' +
+            "📞 9444653143" +
+            "</a>";
+
+
+          statusBox.classList.remove(
+            "hidden"
+          );
+
+
+          registrationForm.classList.add(
+            "hidden"
+          );
+
+
+          return;
+
+        }
+
+
+        /*
+         * ONLINE REGISTRATION ON
+         */
+
+        statusBox.className =
+          "registration-status registration-open";
+
+
+        statusBox.innerHTML =
+          "🟢 <strong>Online Registration is Open</strong>";
+
+
+        statusBox.classList.remove(
+          "hidden"
+        );
+
+
+        registrationForm.classList.remove(
+          "hidden"
+        );
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        console.log(
+          "Unable to check Online Registration status:",
+          error
+        );
+
+      }
+    )
+
+    .apiGetSettings();
+
+}
+
+
 // ========================================================
 // JOIN
 // ========================================================
