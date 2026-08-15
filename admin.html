@@ -2488,113 +2488,141 @@
   /*
    * Session status display.
    */
-  function updateSessionStatus() {
+  
+function updateSessionStatus() {
 
-    const morningOpenElement =
-      document.getElementById(
-        "morningOpen"
-      );
-
-
-    if (!morningOpenElement) {
-      return;
-    }
+  const morningOpenElement =
+    document.getElementById(
+      "morningOpen"
+    );
 
 
-    const eveningOpenElement =
-      document.getElementById(
-        "eveningOpen"
-      );
+  if (!morningOpenElement) {
+    return;
+  }
 
 
-    if (!eveningOpenElement) {
-      return;
-    }
+  const eveningOpenElement =
+    document.getElementById(
+      "eveningOpen"
+    );
 
 
-    const now =
-      new Date();
+  if (!eveningOpenElement) {
+    return;
+  }
 
 
-    const currentMinutes =
-      now.getHours() * 60 +
-      now.getMinutes();
+  /*
+   * If today's session has been closed,
+   * both Morning and Evening sessions
+   * must be shown as CLOSED regardless
+   * of the current time.
+   */
 
-
-    function minutes(
-      value
-    ) {
-
-      if (
-        !value ||
-        !value.includes(":")
-      ) {
-
-        return 0;
-
-      }
-
-
-      const parts =
-        value.split(":");
-
-
-      return (
-        Number(parts[0]) * 60 +
-        Number(parts[1])
-      );
-
-    }
-
-
-    const morningOpen =
-      minutes(
-        document.getElementById(
-          "morningOpen"
-        ).value
-      );
-
-
-    const morningClose =
-      minutes(
-        document.getElementById(
-          "morningClose"
-        ).value
-      );
-
-
-    const eveningOpen =
-      minutes(
-        document.getElementById(
-          "eveningOpen"
-        ).value
-      );
-
-
-    const eveningClose =
-      minutes(
-        document.getElementById(
-          "eveningClose"
-        ).value
-      );
-
+  if (
+    window.dayClosed === true
+  ) {
 
     setSessionText(
       "morningStatusText",
-      currentMinutes >= morningOpen &&
-      currentMinutes < morningClose
+      false
     );
 
 
     setSessionText(
       "eveningStatusText",
-      currentMinutes >= eveningOpen &&
-      currentMinutes < eveningClose
+      false
+    );
+
+
+    return;
+
+  }
+
+
+  const now =
+    new Date();
+
+
+  const currentMinutes =
+    now.getHours() * 60 +
+    now.getMinutes();
+
+
+  function minutes(
+    value
+  ) {
+
+    if (
+      !value ||
+      !value.includes(":")
+    ) {
+
+      return 0;
+
+    }
+
+
+    const parts =
+      value.split(":");
+
+
+    return (
+      Number(parts[0]) * 60 +
+      Number(parts[1])
     );
 
   }
 
 
+  const morningOpen =
+    minutes(
+      document.getElementById(
+        "morningOpen"
+      ).value
+    );
+
+
+  const morningClose =
+    minutes(
+      document.getElementById(
+        "morningClose"
+      ).value
+    );
+
+
+  const eveningOpen =
+    minutes(
+      document.getElementById(
+        "eveningOpen"
+      ).value
+    );
+
+
+  const eveningClose =
+    minutes(
+      document.getElementById(
+        "eveningClose"
+      ).value
+    );
+
+
+  setSessionText(
+    "morningStatusText",
+    currentMinutes >= morningOpen &&
+    currentMinutes < morningClose
+  );
+
+
+  setSessionText(
+    "eveningStatusText",
+    currentMinutes >= eveningOpen &&
+    currentMinutes < eveningClose
+  );
+
+}
+  
   function setSessionText(
     elementId,
     isOpen
