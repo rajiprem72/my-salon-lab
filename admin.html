@@ -1606,7 +1606,14 @@
           );
 
       }
-
+     if (
+          data.dayClosed !== undefined
+        ) {
+        
+          window.dayClosed =
+            data.dayClosed === true;
+        
+        }
 
       updateSessionStatus();
 
