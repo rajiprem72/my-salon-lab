@@ -758,7 +758,6 @@
             <input
               type="checkbox"
               id="onlineRegistration"
-              checked
             >
 
             <span class="slider"></span>
@@ -2406,6 +2405,24 @@
 
       }
 
+/*
+ * Close Day always forces
+ * Online Registration OFF.
+ */
+
+document.getElementById(
+  "onlineRegistration"
+).checked = false;
+
+
+window.dayClosed = true;
+
+
+/*
+ * Both sessions are now CLOSED.
+ */
+
+updateSessionStatus();
 
       showMessage(
         result.message ||
