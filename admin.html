@@ -341,6 +341,130 @@
       font-size: 13px;
     }
 
+    .queue-row {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 13px;
+      margin-bottom: 10px;
+      background: #fafafa;
+    }
+
+    .queue-row-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .ticket-number {
+      font-weight: bold;
+      font-size: 18px;
+      color: #111827;
+    }
+
+    .customer-name {
+      font-weight: bold;
+      font-size: 16px;
+      margin-top: 3px;
+    }
+
+    .customer-mobile {
+      color: #6b7280;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .queue-status {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .queue-status.waiting {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .queue-status.in-service {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .queue-status.not-present {
+      background: #ffedd5;
+      color: #9a3412;
+    }
+
+    .queue-status.done {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .queue-status.cancelled {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .queue-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .queue-action {
+      width: auto;
+      flex: 1;
+      margin: 0;
+      padding: 9px 10px;
+      font-size: 13px;
+    }
+
+    .btn-job-done {
+      background: #16a34a;
+      color: white;
+    }
+
+    .btn-not-present {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .btn-returned {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-cancel-customer {
+      background: #dc2626;
+      color: white;
+    }
+
+    .empty-queue {
+      text-align: center;
+      color: #6b7280;
+      padding: 20px 10px;
+      border: 1px dashed #d1d5db;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 500px) {
+      .queue-row-top {
+        flex-direction: column;
+      }
+
+      .queue-actions {
+        flex-direction: column;
+      }
+
+      .queue-action {
+        width: 100%;
+      }
+    }
+
+
     .hidden {
       display: none !important;
     }
@@ -634,6 +758,31 @@
           </label>
 
         </div>
+
+      </div>
+
+
+      <!-- QUEUE MANAGEMENT -->
+      <div class="card">
+
+        <h2>📋 Today's Queue</h2>
+
+        <div id="queueSummary" class="status-box">
+          Loading queue...
+        </div>
+
+        <div id="queueList" style="margin-top:15px;">
+          Loading customers...
+        </div>
+
+        <button
+          type="button"
+          class="btn-refresh"
+          id="refreshQueueButton"
+          onclick="loadQueue()"
+        >
+          🔄 Refresh Queue
+        </button>
 
       </div>
 
@@ -1193,6 +1342,7 @@
 
 
       await loadSettings();
+      await loadQueue();
 
     }
 
@@ -1475,6 +1625,345 @@
       );
 
     }
+
+  }
+
+
+  /*
+   * Load and display today's queue.
+   */
+  async function loadQueue() {
+
+    if (!adminToken) {
+      return;
+    }
+
+    const list = document.getElementById("queueList");
+    const summary = document.getElementById("queueSummary");
+
+    if (!list || !summary) {
+      return;
+    }
+
+    list.innerHTML = "Loading customers...";
+
+    try {
+
+      const response = await fetch(
+        API_URL + "?action=queue"
+      );
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(
+          data.error || "Unable to load today's queue."
+        );
+      }
+
+      const customers =
+        Array.isArray(data.customers)
+          ? data.customers
+          : [];
+
+      renderQueue(
+        customers,
+        data.serviceCapacity
+      );
+
+    } catch (error) {
+
+      console.error("Load queue:", error);
+
+      summary.textContent =
+        "Queue could not be loaded.";
+
+      list.innerHTML =
+        '<div class="message error" style="display:block;">' +
+        "Unable to load queue: " +
+        escapeHtml(error.message) +
+        "</div>";
+
+    }
+
+  }
+
+
+  function renderQueue(
+    customers,
+    serviceCapacity
+  ) {
+
+    const list = document.getElementById("queueList");
+    const summary = document.getElementById("queueSummary");
+
+    const inService =
+      customers.filter(
+        c => String(c.status || "").toUpperCase() === "IN_SERVICE"
+      ).length;
+
+    const waiting =
+      customers.filter(
+        c => String(c.status || "").toUpperCase() === "WAITING"
+      ).length;
+
+    const notPresent =
+      customers.filter(
+        c => String(c.status || "").toUpperCase() === "NOT_PRESENT"
+      ).length;
+
+    summary.innerHTML =
+      "<strong>Capacity:</strong> " +
+      escapeHtml(String(serviceCapacity ?? "-")) +
+      " &nbsp; | &nbsp; " +
+      "<strong>In Service:</strong> " +
+      inService +
+      " &nbsp; | &nbsp; " +
+      "<strong>Waiting:</strong> " +
+      waiting +
+      " &nbsp; | &nbsp; " +
+      "<strong>Not Present:</strong> " +
+      notPresent;
+
+    /*
+     * The Admin dashboard focuses on the customers
+     * who still need attention today.
+     */
+    const activeCustomers =
+      customers.filter(
+        c => [
+          "WAITING",
+          "IN_SERVICE",
+          "NOT_PRESENT"
+        ].includes(
+          String(c.status || "").toUpperCase()
+        )
+      );
+
+    activeCustomers.sort(
+      (a, b) =>
+        Number(a.ticket || 0) -
+        Number(b.ticket || 0)
+    );
+
+    if (!activeCustomers.length) {
+
+      list.innerHTML =
+        '<div class="empty-queue">' +
+        "There are no active customers in today's queue." +
+        "</div>";
+
+      return;
+
+    }
+
+    list.innerHTML =
+      activeCustomers
+        .map(renderQueueRow)
+        .join("");
+
+  }
+
+
+  function renderQueueRow(
+    customer
+  ) {
+
+    const status =
+      String(
+        customer.status || ""
+      ).toUpperCase();
+
+    const statusClass =
+      status.toLowerCase().replace("_", "-");
+
+    let actions = "";
+
+    if (status === "IN_SERVICE") {
+
+      actions =
+        '<button type="button" class="queue-action btn-job-done" ' +
+        'onclick="queueJobDone(\'' +
+        escapeJs(customer.id) +
+        '\')">✓ Job Done</button>' +
+
+        '<button type="button" class="queue-action btn-cancel-customer" ' +
+        'onclick="queueCancelCustomer(\'' +
+        escapeJs(customer.id) +
+        '\')">✕ Cancel</button>';
+
+    } else if (status === "WAITING") {
+
+      actions =
+        '<button type="button" class="queue-action btn-not-present" ' +
+        'onclick="queueNotPresent(\'' +
+        escapeJs(customer.id) +
+        '\')">⚠ Not Present</button>' +
+
+        '<button type="button" class="queue-action btn-cancel-customer" ' +
+        'onclick="queueCancelCustomer(\'' +
+        escapeJs(customer.id) +
+        '\')">✕ Cancel</button>';
+
+    } else if (status === "NOT_PRESENT") {
+
+      actions =
+        '<button type="button" class="queue-action btn-returned" ' +
+        'onclick="queueReturned(\'' +
+        escapeJs(customer.id) +
+        '\')">↩ Returned</button>' +
+
+        '<button type="button" class="queue-action btn-cancel-customer" ' +
+        'onclick="queueCancelCustomer(\'' +
+        escapeJs(customer.id) +
+        '\')">✕ Cancel</button>';
+
+    }
+
+    return (
+      '<div class="queue-row">' +
+        '<div class="queue-row-top">' +
+          '<div>' +
+            '<div class="ticket-number">#' +
+              escapeHtml(String(customer.ticket || "")) +
+            '</div>' +
+            '<div class="customer-name">' +
+              escapeHtml(String(customer.name || "")) +
+            '</div>' +
+            '<div class="customer-mobile">' +
+              escapeHtml(String(customer.mobile || "")) +
+            '</div>' +
+          '</div>' +
+          '<span class="queue-status ' +
+            statusClass +
+          '">' +
+            escapeHtml(status) +
+          '</span>' +
+        '</div>' +
+        (actions
+          ? '<div class="queue-actions">' +
+              actions +
+            '</div>'
+          : "") +
+      '</div>'
+    );
+
+  }
+
+
+  async function queueJobDone(id) {
+
+    await performQueueAction(
+      "jobDone",
+      id,
+      "Mark this customer as DONE?"
+    );
+
+  }
+
+
+  async function queueNotPresent(id) {
+
+    await performQueueAction(
+      "notPresent",
+      id,
+      "Mark this customer as NOT PRESENT?"
+    );
+
+  }
+
+
+  async function queueReturned(id) {
+
+    await performQueueAction(
+      "returned",
+      id,
+      "Mark this customer as RETURNED?"
+    );
+
+  }
+
+
+  async function queueCancelCustomer(id) {
+
+    await performQueueAction(
+      "cancel",
+      id,
+      "Cancel this customer? This cannot restore the customer's original queue priority."
+    );
+
+  }
+
+
+  async function performQueueAction(
+    action,
+    id,
+    confirmationText
+  ) {
+
+    if (!confirm(confirmationText)) {
+      return;
+    }
+
+    try {
+
+      const result =
+        await adminPost({
+          action: action,
+          id: id
+        });
+
+      if (!result.success) {
+        throw new Error(
+          result.error ||
+          result.message ||
+          "Queue operation failed."
+        );
+      }
+
+      showMessage(
+        result.message ||
+        "Queue updated successfully.",
+        "success"
+      );
+
+      await loadQueue();
+
+    } catch (error) {
+
+      console.error(
+        "Queue action:",
+        error
+      );
+
+      showMessage(
+        "Queue operation failed: " +
+        error.message,
+        "error"
+      );
+
+    }
+
+  }
+
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  }
+
+
+  function escapeJs(value) {
+
+    return String(value)
+      .replaceAll("\\", "\\\\")
+      .replaceAll("'", "\\'");
 
   }
 
@@ -2168,6 +2657,7 @@
 
 
       loadSettings();
+      loadQueue();
 
     }
 
