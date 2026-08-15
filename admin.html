@@ -1,0 +1,2238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Salon Lab - Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 700px;
+      margin: auto;
+      padding: 20px 15px 40px;
+    }
+
+    .header {
+      background: #111827;
+      color: white;
+      padding: 22px 18px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    .header p {
+      margin: 7px 0 0;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    .current-time {
+      text-align: center;
+      font-size: 14px;
+      color: #d1d5db;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
+
+    .card h2 {
+      margin: 0 0 18px;
+      font-size: 20px;
+    }
+
+    .login-card {
+      max-width: 500px;
+      margin: 30px auto 0;
+    }
+
+    .login-title {
+      text-align: center;
+      font-size: 23px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      text-align: center;
+      color: #6b7280;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="time"],
+    input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37,99,235,0.12);
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .password-wrap input {
+      padding-right: 76px;
+    }
+
+    .show-password {
+      position: absolute;
+      right: 8px;
+      top: 7px;
+      width: auto;
+      margin: 0;
+      padding: 8px 10px;
+      background: transparent;
+      color: #374151;
+      font-size: 13px;
+    }
+
+    .session-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .capacity-control {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .capacity-control input {
+      width: 120px;
+    }
+
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .switch-label {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 58px;
+      height: 32px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #9ca3af;
+      border-radius: 32px;
+      transition: 0.25s;
+    }
+
+    .slider:before {
+      content: "";
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      left: 4px;
+      top: 4px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.25s;
+    }
+
+    .switch input:checked + .slider {
+      background: #16a34a;
+    }
+
+    .switch input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+
+    .status-box {
+      padding: 14px;
+      border-radius: 10px;
+      background: #f3f4f6;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .status-open {
+      color: #15803d;
+      font-weight: bold;
+    }
+
+    .status-closed {
+      color: #b91c1c;
+      font-weight: bold;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 9px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-login,
+    .btn-save {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-login:hover,
+    .btn-save:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-close {
+      background: #dc2626;
+      color: white;
+    }
+
+    .btn-close:hover {
+      background: #b91c1c;
+    }
+
+    .btn-refresh {
+      background: #374151;
+      color: white;
+    }
+
+    .btn-logout {
+      background: #6b7280;
+      color: white;
+    }
+
+    .message {
+      display: none;
+      padding: 13px;
+      border-radius: 8px;
+      margin-bottom: 18px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .message.success {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .message.error {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .message.info {
+      display: block;
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .danger-note {
+      background: #fff7ed;
+      color: #9a3412;
+      border: 1px solid #fed7aa;
+      padding: 13px;
+      border-radius: 9px;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .admin-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      font-size: 14px;
+    }
+
+    .admin-user {
+      color: #374151;
+    }
+
+    .admin-user strong {
+      color: #111827;
+    }
+
+    .small-button {
+      width: auto;
+      margin: 0;
+      padding: 9px 13px;
+      font-size: 13px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding: 12px 10px 30px;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .time-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header h1 {
+        font-size: 23px;
+      }
+
+      .admin-bar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .small-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <!-- LOGIN -->
+    <div id="loginSection">
+
+      <div class="header">
+        <h1>The Salon Lab</h1>
+        <p>Queue Management - Admin Panel</p>
+        <div class="current-time" id="loginCurrentTime">
+          Loading time...
+        </div>
+      </div>
+
+      <div class="card login-card">
+
+        <div class="login-title">
+          🔐 Admin Login
+        </div>
+
+        <div class="login-subtitle">
+          Please enter your authorised Admin User ID and password
+          to access the queue management system.
+        </div>
+
+        <div id="loginMessage" class="message"></div>
+
+        <div class="field">
+          <label for="adminUserId">
+            Admin User ID
+          </label>
+
+          <input
+            type="text"
+            id="adminUserId"
+            autocomplete="username"
+            placeholder="Enter Admin User ID"
+          >
+        </div>
+
+        <div class="field">
+          <label for="adminPassword">
+            Password
+          </label>
+
+          <div class="password-wrap">
+            <input
+              type="password"
+              id="adminPassword"
+              autocomplete="current-password"
+              placeholder="Enter Admin Password"
+              onkeydown="if(event.key === 'Enter') adminLogin();"
+            >
+
+            <button
+              type="button"
+              class="show-password"
+              id="showPasswordButton"
+              onclick="togglePassword()"
+            >
+              Show
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn-login"
+          id="loginButton"
+          onclick="adminLogin()"
+        >
+          🔐 Login
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="adminSection" class="hidden">
+
+      <div class="header">
+        <h1>The Salon Lab</h1>
+        <p>Queue Management - Admin Panel</p>
+
+        <div
+          class="current-time"
+          id="currentTime"
+        >
+          Loading time...
+        </div>
+      </div>
+
+
+      <div class="admin-bar">
+
+        <div class="admin-user">
+          Logged in as:
+          <strong id="loggedInUser">Admin</strong>
+        </div>
+
+        <button
+          type="button"
+          class="btn-logout small-button"
+          onclick="logout()"
+        >
+          🚪 Logout
+        </button>
+
+      </div>
+
+
+      <div
+        id="message"
+        class="message"
+      ></div>
+
+
+      <!-- MORNING SESSION -->
+      <div class="card">
+
+        <div class="session-title">
+          🌅 Morning Session
+        </div>
+
+        <div class="time-grid">
+
+          <div class="field">
+
+            <label for="morningOpen">
+              Session Open Time
+            </label>
+
+            <input
+              type="time"
+              id="morningOpen"
+              value="07:00"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="morningClose">
+              Session Close Time
+            </label>
+
+            <input
+              type="time"
+              id="morningClose"
+              value="14:00"
+            >
+
+          </div>
+
+        </div>
+
+        <div
+          id="morningStatus"
+          class="status-box"
+        >
+          Morning session status:
+          <span id="morningStatusText">-</span>
+        </div>
+
+      </div>
+
+
+      <!-- EVENING SESSION -->
+      <div class="card">
+
+        <div class="session-title">
+          🌆 Evening Session
+        </div>
+
+        <div class="time-grid">
+
+          <div class="field">
+
+            <label for="eveningOpen">
+              Session Open Time
+            </label>
+
+            <input
+              type="time"
+              id="eveningOpen"
+              value="17:00"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="eveningClose">
+              Session Close Time
+            </label>
+
+            <input
+              type="time"
+              id="eveningClose"
+              value="21:00"
+            >
+
+          </div>
+
+        </div>
+
+        <div
+          id="eveningStatus"
+          class="status-box"
+        >
+          Evening session status:
+          <span id="eveningStatusText">-</span>
+        </div>
+
+      </div>
+
+
+      <!-- ONLINE REGISTRATION -->
+      <div class="card">
+
+        <h2>🌐 Online Registration</h2>
+
+        <div class="switch-row">
+
+          <div>
+
+            <div class="switch-label">
+              Allow Online Registration
+            </div>
+
+            <div
+              style="
+                font-size:13px;
+                color:#6b7280;
+                margin-top:5px;
+              "
+            >
+              Customers can join the queue remotely.
+            </div>
+
+          </div>
+
+          <label class="switch">
+
+            <input
+              type="checkbox"
+              id="onlineRegistration"
+              checked
+            >
+
+            <span class="slider"></span>
+
+          </label>
+
+        </div>
+
+      </div>
+
+
+      <!-- ADMIN ADD CUSTOMER -->
+      <div class="card">
+
+        <h2>👤 Add Customer at Shop</h2>
+
+        <p style="font-size:14px;color:#6b7280;line-height:1.5;margin-top:-5px;">
+          Use this option when a visitor does not have a smartphone or cannot scan the QR code.
+          The customer will follow the normal queue rules and will not receive any special priority.
+        </p>
+
+        <div class="field">
+          <label for="visitorName">Customer Name</label>
+          <input type="text" id="visitorName" autocomplete="off" maxlength="100" placeholder="Enter customer name">
+        </div>
+
+        <div class="field">
+          <label for="visitorMobile">Mobile Number</label>
+          <input type="text" id="visitorMobile" inputmode="numeric" autocomplete="off" maxlength="10" placeholder="Enter 10-digit mobile number">
+        </div>
+
+        <button type="button" class="btn-save" id="addCustomerButton" onclick="adminAddCustomer()">
+          ➕ Add Customer to Queue
+        </button>
+
+      </div>
+
+
+      <!-- BARBER CAPACITY -->
+      <div class="card">
+
+        <h2>💈 Barber Capacity</h2>
+
+        <div class="field">
+
+          <label for="serviceCapacity">
+            Currently Available Barbers
+          </label>
+
+          <div class="capacity-control">
+
+            <input
+              type="number"
+              id="serviceCapacity"
+              min="1"
+              step="1"
+              value="1"
+            >
+
+            <span>barber(s)</span>
+
+          </div>
+
+        </div>
+
+        <div class="danger-note">
+
+          Minimum operating capacity is
+          <strong>1 barber</strong>.
+          The system does not operate with
+          zero barbers.
+
+        </div>
+
+      </div>
+
+
+      <!-- SAVE SETTINGS -->
+      <div class="card">
+
+        <h2>⚙️ Save Settings</h2>
+
+        <p
+          style="
+            font-size:14px;
+            color:#6b7280;
+            line-height:1.5;
+          "
+        >
+          Save the current session timings,
+          online registration setting and
+          barber capacity.
+
+        </p>
+
+        <button
+          type="button"
+          class="btn-save"
+          id="saveButton"
+          onclick="saveSettings()"
+        >
+          💾 Save Settings
+        </button>
+
+        <button
+          type="button"
+          class="btn-refresh"
+          id="reloadButton"
+          onclick="loadSettings()"
+        >
+          🔄 Reload Current Settings
+        </button>
+
+      </div>
+
+
+      <!-- CLOSE DAY -->
+      <div class="card">
+
+        <h2>🔒 Close Session / Day</h2>
+
+        <div class="danger-note">
+
+          Before closing the session, the system
+          will verify that no customer is currently
+          <strong>IN_SERVICE</strong>.
+
+          Any remaining WAITING or NOT_PRESENT
+          customers will be handled according to
+          the queue rules.
+
+        </div>
+
+        <button
+          type="button"
+          class="btn-close"
+          id="closeButton"
+          onclick="closeDay()"
+        >
+          🔒 Close Today's Session
+        </button>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+<script>
+
+  /*
+   * Google Apps Script Web App URL
+   */
+  const API_URL =
+    "https://script.google.com/macros/s/AKfycbyVQG7zViCHovoBDjktALQNRh40nymXyQ2Yv59Y_01dIdRTRbfdUGW2fyRFYoSj3gU/exec";
+
+
+  /*
+   * Session storage key.
+   *
+   * The Admin token is deliberately kept in
+   * sessionStorage so closing the browser tab
+   * removes the session.
+   */
+  const TOKEN_KEY =
+    "THE_SALON_LAB_ADMIN_TOKEN";
+
+
+  const USER_KEY =
+    "THE_SALON_LAB_ADMIN_USER";
+
+
+  /*
+   * Current Admin token.
+   */
+  let adminToken =
+    sessionStorage.getItem(
+      TOKEN_KEY
+    ) || "";
+
+
+  let adminUser =
+    sessionStorage.getItem(
+      USER_KEY
+    ) || "";
+
+
+  /*
+   * Display message.
+   */
+  function showMessage(
+    text,
+    type
+  ) {
+
+    const box =
+      document.getElementById(
+        "message"
+      );
+
+    if (!box) {
+      return;
+    }
+
+    box.textContent =
+      text;
+
+    box.className =
+      "message " +
+      type;
+
+  }
+
+
+  /*
+   * Display login message.
+   */
+  function showLoginMessage(
+    text,
+    type
+  ) {
+
+    const box =
+      document.getElementById(
+        "loginMessage"
+      );
+
+    box.textContent =
+      text;
+
+    box.className =
+      "message " +
+      type;
+
+  }
+
+
+  /*
+   * Extract the actual backend result.
+   *
+   * doPost() returns:
+   *
+   * {
+   *   success: true,
+   *   requestId: "...",
+   *   result: {...}
+   * }
+   */
+  function unwrapPostResponse(
+    data
+  ) {
+
+    if (
+      data &&
+      data.result
+    ) {
+
+      return data.result;
+
+    }
+
+    return data;
+
+  }
+
+
+  /*
+   * Perform authenticated POST.
+   *
+   * Every Admin operation goes through
+   * this function so the token is always
+   * included consistently.
+   */
+  async function adminPost(
+    payload
+  ) {
+
+    if (!adminToken) {
+
+      logout();
+
+      throw new Error(
+        "Admin authentication required."
+      );
+
+    }
+
+
+    const body = {
+
+      ...payload,
+
+      token:
+        adminToken
+
+    };
+
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+
+          method:
+            "POST",
+
+          headers: {
+            "Content-Type":
+              "text/plain;charset=utf-8"
+          },
+
+          body:
+            JSON.stringify(
+              body
+            )
+
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    /*
+     * Authentication failures are returned
+     * by doPost() as success:false.
+     */
+    if (
+      !data.success
+    ) {
+
+      const errorMessage =
+        data.error ||
+        "Admin operation failed.";
+
+
+      if (
+        errorMessage
+          .toLowerCase()
+          .includes("admin authentication") ||
+        errorMessage
+          .toLowerCase()
+          .includes("invalid or expired admin session") ||
+        errorMessage
+          .toLowerCase()
+          .includes("admin session has expired")
+      ) {
+
+        logout();
+
+        throw new Error(
+          "Your Admin session has expired. Please login again."
+        );
+
+      }
+
+
+      throw new Error(
+        errorMessage
+      );
+
+    }
+
+
+    return unwrapPostResponse(
+      data
+    );
+
+  }
+
+
+  /*
+   * Admin login.
+   */
+  async function adminLogin() {
+
+    const userId =
+      document.getElementById(
+        "adminUserId"
+      ).value.trim();
+
+
+    const password =
+      document.getElementById(
+        "adminPassword"
+      ).value;
+
+
+    if (!userId) {
+
+      showLoginMessage(
+        "Please enter the Admin User ID.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if (!password) {
+
+      showLoginMessage(
+        "Please enter the Admin password.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    const button =
+      document.getElementById(
+        "loginButton"
+      );
+
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "⏳ Logging in...";
+
+
+    showLoginMessage(
+      "Authenticating...",
+      "info"
+    );
+
+
+    try {
+
+      const response =
+        await fetch(
+          API_URL,
+          {
+
+            method:
+              "POST",
+
+            headers: {
+              "Content-Type":
+                "text/plain;charset=utf-8"
+            },
+
+            body:
+              JSON.stringify({
+
+                action:
+                  "adminLogin",
+
+                userId:
+                  userId,
+
+                password:
+                  password
+
+              })
+
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if (
+        !data.success
+      ) {
+
+        throw new Error(
+          data.error ||
+          "Invalid Admin ID or password."
+        );
+
+      }
+
+
+      const result =
+        unwrapPostResponse(
+          data
+        );
+
+
+      if (
+        !result.success ||
+        !result.token
+      ) {
+
+        throw new Error(
+          "Login succeeded but no Admin session token was received."
+        );
+
+      }
+
+
+      /*
+       * Store only the temporary token.
+       * The password is never stored.
+       */
+      adminToken =
+        result.token;
+
+
+      adminUser =
+        userId;
+
+
+      sessionStorage.setItem(
+        TOKEN_KEY,
+        adminToken
+      );
+
+
+      sessionStorage.setItem(
+        USER_KEY,
+        adminUser
+      );
+
+
+      document.getElementById(
+        "loggedInUser"
+      ).textContent =
+        adminUser;
+
+
+      document.getElementById(
+        "adminUserId"
+      ).value = "";
+
+
+      document.getElementById(
+        "adminPassword"
+      ).value = "";
+
+
+      showLoginMessage(
+        "",
+        "info"
+      );
+
+
+      document.getElementById(
+        "loginSection"
+      ).classList.add(
+        "hidden"
+      );
+
+
+      document.getElementById(
+        "adminSection"
+      ).classList.remove(
+        "hidden"
+      );
+
+
+      updateClock();
+      updateSessionStatus();
+
+
+      await loadSettings();
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Admin Login:",
+        error
+      );
+
+
+      showLoginMessage(
+        error.message ||
+        "Unable to login.",
+        "error"
+      );
+
+    }
+
+    finally {
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "🔐 Login";
+
+    }
+
+  }
+
+
+  /*
+   * Logout.
+   */
+  function logout() {
+
+    adminToken =
+      "";
+
+    adminUser =
+      "";
+
+
+    sessionStorage.removeItem(
+      TOKEN_KEY
+    );
+
+    sessionStorage.removeItem(
+      USER_KEY
+    );
+
+
+    document.getElementById(
+      "adminSection"
+    ).classList.add(
+      "hidden"
+    );
+
+
+    document.getElementById(
+      "loginSection"
+    ).classList.remove(
+      "hidden"
+    );
+
+
+    document.getElementById(
+      "adminPassword"
+    ).value =
+      "";
+
+
+    showLoginMessage(
+      "You have been logged out.",
+      "success"
+    );
+
+  }
+
+
+  /*
+   * Show / Hide password.
+   */
+  function togglePassword() {
+
+    const input =
+      document.getElementById(
+        "adminPassword"
+      );
+
+    const button =
+      document.getElementById(
+        "showPasswordButton"
+      );
+
+
+    if (
+      input.type === "password"
+    ) {
+
+      input.type =
+        "text";
+
+      button.textContent =
+        "Hide";
+
+    }
+
+    else {
+
+      input.type =
+        "password";
+
+      button.textContent =
+        "Show";
+
+    }
+
+  }
+
+
+  /*
+   * Load current settings.
+   *
+   * The settings endpoint is a GET endpoint.
+   * The page only calls it after Admin login.
+   */
+  async function loadSettings() {
+
+    if (!adminToken) {
+      return;
+    }
+
+
+    try {
+
+      showMessage(
+        "Loading current settings...",
+        "info"
+      );
+
+
+      const response =
+        await fetch(
+          API_URL +
+          "?action=settings"
+        );
+
+
+      const data =
+        await response.json();
+
+
+      console.log(
+        "Settings:",
+        data
+      );
+
+
+      if (
+        !data.success
+      ) {
+
+        throw new Error(
+          data.error ||
+          data.message ||
+          "Unable to load settings."
+        );
+
+      }
+
+
+      /*
+       * Service capacity.
+       */
+      if (
+        data.serviceCapacity !== undefined &&
+        data.serviceCapacity !== null
+      ) {
+
+        document.getElementById(
+          "serviceCapacity"
+        ).value =
+          data.serviceCapacity;
+
+      }
+
+
+      /*
+       * Session timings.
+       */
+      if (
+        data.morningOpen
+      ) {
+
+        document.getElementById(
+          "morningOpen"
+        ).value =
+          data.morningOpen;
+
+      }
+
+
+      if (
+        data.morningClose
+      ) {
+
+        document.getElementById(
+          "morningClose"
+        ).value =
+          data.morningClose;
+
+      }
+
+
+      if (
+        data.eveningOpen
+      ) {
+
+        document.getElementById(
+          "eveningOpen"
+        ).value =
+          data.eveningOpen;
+
+      }
+
+
+      if (
+        data.eveningClose
+      ) {
+
+        document.getElementById(
+          "eveningClose"
+        ).value =
+          data.eveningClose;
+
+      }
+
+
+      /*
+       * Online registration.
+       */
+      if (
+        data.onlineRegistration !== undefined
+      ) {
+
+        document.getElementById(
+          "onlineRegistration"
+        ).checked =
+          Boolean(
+            data.onlineRegistration
+          );
+
+      }
+
+
+      updateSessionStatus();
+
+
+      showMessage(
+        "Current settings loaded successfully.",
+        "success"
+      );
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Load settings:",
+        error
+      );
+
+
+      showMessage(
+        "Unable to load settings: " +
+        error.message,
+        "error"
+      );
+
+    }
+
+  }
+
+
+  /*
+   * Add a walk-in customer through the Admin panel.
+   * Only Name and Mobile Number are collected.
+   * The backend applies the normal queue rules.
+   */
+  async function adminAddCustomer() {
+
+    const name = document.getElementById("visitorName").value.trim();
+    const mobile = document.getElementById("visitorMobile").value.trim();
+
+    if (!name) {
+      showMessage("Please enter the customer's name.", "error");
+      return;
+    }
+
+    if (!/^\d{10}$/.test(mobile)) {
+      showMessage("Please enter a valid 10-digit mobile number.", "error");
+      return;
+    }
+
+    const button = document.getElementById("addCustomerButton");
+    button.disabled = true;
+    button.textContent = "⏳ Adding...";
+
+    try {
+      const result = await adminPost({
+        action: "adminAddCustomer",
+        name: name,
+        mobile: mobile
+      });
+
+      console.log("Admin Add Customer:", result);
+
+      if (!result.success) {
+        throw new Error(result.error || result.message || "Unable to add customer.");
+      }
+
+      document.getElementById("visitorName").value = "";
+      document.getElementById("visitorMobile").value = "";
+
+      let message = "Customer added successfully.";
+
+      if (result.ticket !== undefined && result.ticket !== null) {
+        message += " Ticket Number: #" + result.ticket + ".";
+      }
+
+      if (result.status) {
+        message += " Status: " + result.status + ".";
+      }
+
+      showMessage(message, "success");
+
+    } catch (error) {
+      console.error("Admin Add Customer:", error);
+      showMessage("Unable to add customer: " + error.message, "error");
+
+    } finally {
+      button.disabled = false;
+      button.textContent = "➕ Add Customer to Queue";
+    }
+  }
+
+
+  /*
+   * Save settings.
+   */
+  async function saveSettings() {
+
+    const morningOpen =
+      document.getElementById(
+        "morningOpen"
+      ).value;
+
+
+    const morningClose =
+      document.getElementById(
+        "morningClose"
+      ).value;
+
+
+    const eveningOpen =
+      document.getElementById(
+        "eveningOpen"
+      ).value;
+
+
+    const eveningClose =
+      document.getElementById(
+        "eveningClose"
+      ).value;
+
+
+    const onlineRegistration =
+      document.getElementById(
+        "onlineRegistration"
+      ).checked;
+
+
+    const serviceCapacity =
+      Number(
+        document.getElementById(
+          "serviceCapacity"
+        ).value
+      );
+
+
+    /*
+     * Basic validation.
+     */
+    if (
+      !Number.isInteger(
+        serviceCapacity
+      ) ||
+      serviceCapacity < 1
+    ) {
+
+      showMessage(
+        "At least one barber must be available.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if (
+      !morningOpen ||
+      !morningClose ||
+      !eveningOpen ||
+      !eveningClose
+    ) {
+
+      showMessage(
+        "Please enter all session timings.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    /*
+     * Ensure opening time is before
+     * closing time for each session.
+     */
+    if (
+      morningOpen >= morningClose
+    ) {
+
+      showMessage(
+        "Morning opening time must be earlier than the morning closing time.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if (
+      eveningOpen >= eveningClose
+    ) {
+
+      showMessage(
+        "Evening opening time must be earlier than the evening closing time.",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    const button =
+      document.getElementById(
+        "saveButton"
+      );
+
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "⏳ Saving...";
+
+
+    try {
+
+      const result =
+        await adminPost({
+
+          action:
+            "saveSettings",
+
+          capacity:
+            serviceCapacity,
+
+          morningOpen:
+            morningOpen,
+
+          morningClose:
+            morningClose,
+
+          eveningOpen:
+            eveningOpen,
+
+          eveningClose:
+            eveningClose,
+
+          onlineRegistration:
+            onlineRegistration
+
+        });
+
+
+      console.log(
+        "Save Settings:",
+        result
+      );
+
+
+      if (
+        !result.success
+      ) {
+
+        throw new Error(
+          result.error ||
+          result.message ||
+          "Unable to save settings."
+        );
+
+      }
+
+
+      /*
+       * Refresh the controls from the
+       * backend response.
+       */
+      if (
+        result.serviceCapacity !== undefined
+      ) {
+
+        document.getElementById(
+          "serviceCapacity"
+        ).value =
+          result.serviceCapacity;
+
+      }
+
+
+      if (
+        result.morningOpen
+      ) {
+
+        document.getElementById(
+          "morningOpen"
+        ).value =
+          result.morningOpen;
+
+      }
+
+
+      if (
+        result.morningClose
+      ) {
+
+        document.getElementById(
+          "morningClose"
+        ).value =
+          result.morningClose;
+
+      }
+
+
+      if (
+        result.eveningOpen
+      ) {
+
+        document.getElementById(
+          "eveningOpen"
+        ).value =
+          result.eveningOpen;
+
+      }
+
+
+      if (
+        result.eveningClose
+      ) {
+
+        document.getElementById(
+          "eveningClose"
+        ).value =
+          result.eveningClose;
+
+      }
+
+
+      if (
+        result.onlineRegistration !== undefined
+      ) {
+
+        document.getElementById(
+          "onlineRegistration"
+        ).checked =
+          Boolean(
+            result.onlineRegistration
+          );
+
+      }
+
+
+      updateSessionStatus();
+
+
+      showMessage(
+        "Settings saved successfully.",
+        "success"
+      );
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Save settings:",
+        error
+      );
+
+
+      showMessage(
+        "Unable to save settings: " +
+        error.message,
+        "error"
+      );
+
+    }
+
+    finally {
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "💾 Save Settings";
+
+    }
+
+  }
+
+
+  /*
+   * Close today's queue.
+   */
+  async function closeDay() {
+
+    const confirmed =
+      confirm(
+        "Are you sure you want to close today's session?" +
+        "\n\n" +
+        "The system will first check whether any customer is still IN_SERVICE."
+      );
+
+
+    if (!confirmed) {
+      return;
+    }
+
+
+    const button =
+      document.getElementById(
+        "closeButton"
+      );
+
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "⏳ Closing...";
+
+
+    try {
+
+      showMessage(
+        "Closing today's session...",
+        "info"
+      );
+
+
+      const result =
+        await adminPost({
+
+          action:
+            "closeDay"
+
+        });
+
+
+      console.log(
+        "Close Day:",
+        result
+      );
+
+
+      if (
+        !result.success
+      ) {
+
+        throw new Error(
+          result.error ||
+          result.message ||
+          "Unable to close the session."
+        );
+
+      }
+
+
+      showMessage(
+        result.message ||
+        "Today's session has been closed successfully.",
+        "success"
+      );
+
+    }
+
+    catch (error) {
+
+      console.error(
+        "Close Day:",
+        error
+      );
+
+
+      showMessage(
+        "Unable to close session: " +
+        error.message,
+        "error"
+      );
+
+    }
+
+    finally {
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "🔒 Close Today's Session";
+
+    }
+
+  }
+
+
+  /*
+   * Update clock.
+   */
+  function updateClock() {
+
+    const now =
+      new Date();
+
+
+    const loginClock =
+      document.getElementById(
+        "loginCurrentTime"
+      );
+
+
+    const adminClock =
+      document.getElementById(
+        "currentTime"
+      );
+
+
+    const formatted =
+      now.toLocaleString(
+        "en-IN",
+        {
+          dateStyle:
+            "medium",
+
+          timeStyle:
+            "medium"
+        }
+      );
+
+
+    if (loginClock) {
+      loginClock.textContent =
+        formatted;
+    }
+
+
+    if (adminClock) {
+      adminClock.textContent =
+        formatted;
+    }
+
+  }
+
+
+  /*
+   * Session status display.
+   */
+  function updateSessionStatus() {
+
+    const morningOpenElement =
+      document.getElementById(
+        "morningOpen"
+      );
+
+
+    if (!morningOpenElement) {
+      return;
+    }
+
+
+    const eveningOpenElement =
+      document.getElementById(
+        "eveningOpen"
+      );
+
+
+    if (!eveningOpenElement) {
+      return;
+    }
+
+
+    const now =
+      new Date();
+
+
+    const currentMinutes =
+      now.getHours() * 60 +
+      now.getMinutes();
+
+
+    function minutes(
+      value
+    ) {
+
+      if (
+        !value ||
+        !value.includes(":")
+      ) {
+
+        return 0;
+
+      }
+
+
+      const parts =
+        value.split(":");
+
+
+      return (
+        Number(parts[0]) * 60 +
+        Number(parts[1])
+      );
+
+    }
+
+
+    const morningOpen =
+      minutes(
+        document.getElementById(
+          "morningOpen"
+        ).value
+      );
+
+
+    const morningClose =
+      minutes(
+        document.getElementById(
+          "morningClose"
+        ).value
+      );
+
+
+    const eveningOpen =
+      minutes(
+        document.getElementById(
+          "eveningOpen"
+        ).value
+      );
+
+
+    const eveningClose =
+      minutes(
+        document.getElementById(
+          "eveningClose"
+        ).value
+      );
+
+
+    setSessionText(
+      "morningStatusText",
+      currentMinutes >= morningOpen &&
+      currentMinutes < morningClose
+    );
+
+
+    setSessionText(
+      "eveningStatusText",
+      currentMinutes >= eveningOpen &&
+      currentMinutes < eveningClose
+    );
+
+  }
+
+
+  function setSessionText(
+    elementId,
+    isOpen
+  ) {
+
+    const element =
+      document.getElementById(
+        elementId
+      );
+
+
+    if (!element) {
+      return;
+    }
+
+
+    if (isOpen) {
+
+      element.textContent =
+        "OPEN";
+
+      element.className =
+        "status-open";
+
+    }
+
+    else {
+
+      element.textContent =
+        "CLOSED";
+
+      element.className =
+        "status-closed";
+
+    }
+
+  }
+
+
+  /*
+   * Restore an existing browser session.
+   *
+   * We deliberately do not assume that a token
+   * is still valid. The first protected operation
+   * will cause logout if the server has expired it.
+   */
+  function restoreSession() {
+
+    if (
+      adminToken &&
+      adminUser
+    ) {
+
+      document.getElementById(
+        "loggedInUser"
+      ).textContent =
+        adminUser;
+
+
+      document.getElementById(
+        "loginSection"
+      ).classList.add(
+        "hidden"
+      );
+
+
+      document.getElementById(
+        "adminSection"
+      ).classList.remove(
+        "hidden"
+      );
+
+
+      loadSettings();
+
+    }
+
+  }
+
+
+  /*
+   * Initialisation.
+   */
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+      updateClock();
+
+      updateSessionStatus();
+
+      restoreSession();
+
+
+      setInterval(
+        function() {
+
+          updateClock();
+
+          updateSessionStatus();
+
+        },
+        1000
+      );
+
+
+      /*
+       * Update status immediately when
+       * Admin changes a timing manually.
+       */
+      [
+        "morningOpen",
+        "morningClose",
+        "eveningOpen",
+        "eveningClose"
+      ].forEach(
+        function(id) {
+
+          const element =
+            document.getElementById(
+              id
+            );
+
+          if (element) {
+
+            element.addEventListener(
+              "change",
+              updateSessionStatus
+            );
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
