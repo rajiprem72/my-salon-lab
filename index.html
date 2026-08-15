@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <base target="_top">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>The Salon Lab</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #222;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 22px;
+      padding: 28px 22px;
+      box-shadow: 0 5px 25px rgba(0,0,0,.10);
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .subtitle {
+      color: #777;
+      margin: 8px 0 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px;
+      margin: 7px 0;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font-size: 18px;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      margin-top: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #111;
+      color: white;
+      font-size: 18px;
+    }
+
+    button:disabled {
+      opacity: .5;
+    }
+
+    .queue-label {
+      color: #777;
+      margin-top: 15px;
+    }
+
+    .queue-number {
+      font-size: 82px;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .ahead {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .waiting {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 14px;
+      background: #f1f1f1;
+      line-height: 1.5;
+    }
+
+    .turn {
+      margin-top: 20px;
+      padding: 22px 15px;
+      border-radius: 15px;
+      background: #e9f8ee;
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 1.5;
+    }
+
+    .done {
+      margin-top: 20px;
+      padding: 22px 15px;
+      border-radius: 15px;
+      background: #e9f8ee;
+      font-size: 20px;
+      line-height: 1.5;
+    }
+
+    .not-present {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 15px;
+      background: #fff4d6;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .alert {
+      margin-top: 20px;
+      background: #444;
+    }
+
+    .alert-status {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #777;
+    }
+
+    .update {
+      margin-top: 18px;
+      color: #999;
+      font-size: 13px;
+    }
+
+    .error {
+      color: #c00;
+      margin-top: 10px;
+    }
+
+.registration-status {
+  margin-top: 20px;
+  padding: 22px 18px;
+  border-radius: 15px;
+  font-size: 18px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.registration-closed {
+  background: #fff4d6;
+}
+
+.registration-ended {
+  background: #f8e8e8;
+}
+
+.registration-open {
+  background: #e9f8ee;
+}
+
+.shop-phone {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 21px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #111;
+}
+
+    .hidden {
+      display: none;
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+
+  <div class="logo">
+    ✂️ The Salon Lab
+  </div>
+
+  <div class="subtitle">
+    Queue Management
+  </div>
+
+
+  <!-- =====================================================
+       REGISTRATION
+  ====================================================== -->
+
+ <div id="registration">
+
+  <!-- =====================================================
+       ONLINE REGISTRATION STATUS
+  ====================================================== -->
+
+  <div
+    id="registrationStatus"
+    class="registration-status hidden">
+  </div>
+
+
+  <!-- =====================================================
+       REGISTRATION FORM
+  ====================================================== -->
+
+  <div id="registrationForm">
+
+    <h2>Join the Queue</h2>
+
+    <p>
+      Enter your name and mobile number.
+    </p>
+
+    <input
+      id="name"
+      type="text"
+      placeholder="Your Name"
+      autocomplete="name">
+
+    <input
+      id="mobile"
+      type="tel"
+      placeholder="Mobile Number"
+      autocomplete="tel">
+
+<button
+  id="joinButton"
+  onclick="joinQueue()">
+
+  Join Queue
+
+</button>
+
+<div
+  id="error"
+  class="error">
+</div>
+
+</div> <!-- registrationForm -->
+
+</div> <!-- registration -->
+
+
+  <!-- =====================================================
+       CUSTOMER SESSION
+  ====================================================== -->
+
+  <div
+    id="session"
+    class="hidden">
+
+    <div>
+      Hello,
+      <strong id="customerName"></strong>
+    </div>
+
+
+    <div class="queue-label">
+      YOUR QUEUE POSITION
+    </div>
+
+
+    <div
+      id="position"
+      class="queue-number">
+
+      #-
+
+    </div>
+
+
+    <div
+      id="ahead"
+      class="ahead">
+
+    </div>
+
+
+    <div
+      id="waiting"
+      class="waiting">
+
+      Please wait for your turn.
+
+    </div>
+
+
+    <div
+      id="turn"
+      class="turn hidden">
+
+      📳<br>
+
+      YOUR TURN!<br><br>
+
+      Please proceed for your haircut.
+
+    </div>
+
+
+    <div
+      id="notPresent"
+      class="not-present hidden">
+
+      You are temporarily marked as
+      <strong>Not Present</strong>.
+
+      <br><br>
+
+      Please return to the salon and inform
+      the admin.
+
+    </div>
+
+
+    <div
+      id="done"
+      class="done hidden">
+
+      Thank you for choosing
+      <strong>The Salon Lab</strong>.
+
+      <br><br>
+
+      We hope to see you again!
+
+    </div>
+
+
+    <button
+      id="alertButton"
+      class="alert"
+      onclick="enableVibration()">
+
+      📳 Enable Turn Alert
+
+    </button>
+
+
+    <div
+      id="alertStatus"
+      class="alert-status">
+
+      Enable vibration so your phone can alert
+      you when it is your turn.
+
+    </div>
+
+
+    <div
+      id="update"
+      class="update">
+
+    </div>
+
+  </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+let customerId = null;
+
+let previousPosition = null;
+
+let vibrationEnabled = false;
+
+let timer = null;
+
+let registrationTimer = null;
+// ========================================================
+// JOIN
+// ========================================================
+
+function joinQueue() {
+
+  const name =
+    document
+      .getElementById("name")
+      .value
+      .trim();
+
+  const mobile =
+    document
+      .getElementById("mobile")
+      .value
+      .trim();
+
+
+  if (!name) {
+
+    showError(
+      "Please enter your name."
+    );
+
+    return;
+
+  }
+
+
+  const cleanMobile =
+    mobile.replace(/\D/g, "");
+
+
+  if (
+    cleanMobile &&
+    cleanMobile.length < 10
+  ) {
+
+    showError(
+      "Please enter a valid mobile number."
+    );
+
+    return;
+
+  }
+
+
+  const button =
+    document.getElementById(
+      "joinButton"
+    );
+
+
+  button.disabled = true;
+
+  button.innerText =
+    "Joining Queue...";
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(result) {
+
+        customerId =
+          result.id;
+
+
+        localStorage.setItem(
+          "theSalonLabSession",
+          customerId
+        );
+
+
+        localStorage.setItem(
+          "theSalonLabName",
+          result.name
+        );
+
+
+        showSession(
+          result
+        );
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        showError(
+          error.message
+        );
+
+
+        button.disabled = false;
+
+        button.innerText =
+          "Join Queue";
+
+      }
+    )
+
+    .registerCustomer(
+      name,
+      cleanMobile
+    );
+
+}
+
+
+// ========================================================
+// SHOW SESSION
+// ========================================================
+
+function showSession(data) {
+
+  document
+    .getElementById(
+      "registration"
+    )
+    .classList.add(
+      "hidden"
+    );
+
+
+  document
+    .getElementById(
+      "session"
+    )
+    .classList.remove(
+      "hidden"
+    );
+
+
+  document
+    .getElementById(
+      "customerName"
+    )
+    .innerText =
+    data.name || "";
+
+
+  customerId =
+    data.id;
+
+
+  previousPosition =
+    data.position
+      ? Number(data.position)
+      : null;
+
+
+  updateDisplay(
+    data,
+    false
+  );
+
+
+  startPolling();
+
+}
+
+
+// ========================================================
+// DISPLAY
+// ========================================================
+
+function updateDisplay(
+  data,
+  allowVibration
+) {
+
+  hideAllMessages();
+
+
+  // ------------------------------------------------------
+  // DONE
+  // ------------------------------------------------------
+
+  if (data.done) {
+
+    document
+      .getElementById(
+        "position"
+      )
+      .innerText =
+      "✓";
+
+
+    document
+      .getElementById(
+        "done"
+      )
+      .classList.remove(
+        "hidden"
+      );
+
+
+    document
+      .getElementById(
+        "alertButton"
+      )
+      .classList.add(
+        "hidden"
+      );
+
+
+    document
+      .getElementById(
+        "alertStatus"
+      )
+      .classList.add(
+        "hidden"
+      );
+
+
+    stopPolling();
+
+    return;
+
+  }
+
+
+  // ------------------------------------------------------
+  // CANCELLED
+  // ------------------------------------------------------
+
+  if (data.cancelled) {
+
+    document
+      .getElementById(
+        "position"
+      )
+      .innerText =
+      "—";
+
+
+    document
+      .getElementById(
+        "waiting"
+      )
+      .innerText =
+      "Your queue entry has been cancelled for today.";
+
+
+    document
+      .getElementById(
+        "waiting"
+      )
+      .classList.remove(
+        "hidden"
+      );
+
+
+    stopPolling();
+
+    return;
+
+  }
+
+
+  // ------------------------------------------------------
+  // NOT PRESENT
+  // ------------------------------------------------------
+
+  if (
+    data.status ===
+    "NOT_PRESENT"
+  ) {
+
+    document
+      .getElementById(
+        "position"
+      )
+      .innerText =
+      "—";
+
+
+    document
+      .getElementById(
+        "notPresent"
+      )
+      .classList.remove(
+        "hidden"
+      );
+
+
+    return;
+
+  }
+
+
+  // ------------------------------------------------------
+  // NORMAL ACTIVE CUSTOMER
+  // ------------------------------------------------------
+
+  const newPosition =
+    Number(data.position);
+
+
+  document
+    .getElementById(
+      "position"
+    )
+    .innerText =
+    "#" + newPosition;
+
+
+  // ------------------------------------------------------
+  // PEOPLE AHEAD
+  // ------------------------------------------------------
+
+  if (
+    newPosition === 1
+  ) {
+
+    document
+      .getElementById(
+        "ahead"
+      )
+      .innerText =
+      "It is your turn!";
+
+  }
+
+  else if (
+    newPosition === 2
+  ) {
+
+    document
+      .getElementById(
+        "ahead"
+      )
+      .innerText =
+      "1 person is ahead of you.";
+
+  }
+
+  else {
+
+    document
+      .getElementById(
+        "ahead"
+      )
+      .innerText =
+      (
+        newPosition - 1
+      ) +
+      " people are ahead of you.";
+
+  }
+
+
+  // ------------------------------------------------------
+  // TURN
+  // ------------------------------------------------------
+
+  if (
+    newPosition === 1
+  ) {
+
+    document
+      .getElementById(
+        "turn"
+      )
+      .classList.remove(
+        "hidden"
+      );
+
+
+    // Only vibrate when the customer actually
+    // changes INTO position #1.
+
+    if (
+      allowVibration &&
+      vibrationEnabled &&
+      previousPosition !== 1
+    ) {
+
+      vibrate();
+
+    }
+
+  }
+
+  else {
+
+    document
+      .getElementById(
+        "waiting"
+      )
+      .classList.remove(
+        "hidden"
+      );
+
+  }
+
+
+  previousPosition =
+    newPosition;
+
+
+  document
+    .getElementById(
+      "update"
+    )
+    .innerText =
+    "Queue updated just now.";
+
+}
+
+
+// ========================================================
+// HIDE MESSAGES
+// ========================================================
+
+function hideAllMessages() {
+
+  [
+    "waiting",
+    "turn",
+    "done",
+    "notPresent"
+  ].forEach(
+    function(id) {
+
+      document
+        .getElementById(id)
+        .classList.add(
+          "hidden"
+        );
+
+    }
+  );
+
+}
+
+
+// ========================================================
+// VIBRATION
+// ========================================================
+
+function enableVibration() {
+
+  vibrationEnabled = true;
+
+
+  localStorage.setItem(
+    "theSalonLabVibration",
+    "enabled"
+  );
+
+
+  if (
+    "vibrate" in navigator
+  ) {
+
+    navigator.vibrate(150);
+
+
+    document
+      .getElementById(
+        "alertStatus"
+      )
+      .innerText =
+      "✓ Turn vibration enabled.";
+
+
+    document
+      .getElementById(
+        "alertButton"
+      )
+      .innerText =
+      "✓ Turn Alert Enabled";
+
+  }
+
+  else {
+
+    document
+      .getElementById(
+        "alertStatus"
+      )
+      .innerText =
+      "Vibration is not supported by this browser.";
+
+  }
+
+}
+
+
+// ========================================================
+// TURN VIBRATION
+// ========================================================
+
+function vibrate() {
+
+  if (
+    "vibrate" in navigator
+  ) {
+
+    navigator.vibrate([
+      300,
+      150,
+      300,
+      150,
+      600
+    ]);
+
+  }
+
+}
+
+
+// ========================================================
+// POLLING
+// ========================================================
+
+function startPolling() {
+
+  stopPolling();
+
+
+  timer =
+    setInterval(
+      checkStatus,
+      5000
+    );
+
+
+  checkStatus();
+
+}
+
+
+function stopPolling() {
+
+  if (timer) {
+
+    clearInterval(timer);
+
+    timer = null;
+
+  }
+
+}
+
+
+// ========================================================
+// CHECK STATUS
+// ========================================================
+
+function checkStatus() {
+
+  if (!customerId) {
+    return;
+  }
+
+
+  google.script.run
+
+    .withSuccessHandler(
+      function(data) {
+
+        if (
+          data &&
+          data.found
+        ) {
+
+          updateDisplay(
+            data,
+            true
+          );
+
+        }
+
+      }
+    )
+
+    .withFailureHandler(
+      function(error) {
+
+        console.log(
+          error
+        );
+
+      }
+    )
+
+    .getCustomerStatus(
+      customerId
+    );
+
+}
+
+
+// ========================================================
+// RESTORE SESSION
+// ========================================================
+
+window.onload =
+  function() {
+
+    if (
+      localStorage.getItem(
+        "theSalonLabVibration"
+      ) === "enabled"
+    ) {
+
+      vibrationEnabled =
+        true;
+
+
+      document
+        .getElementById(
+          "alertStatus"
+        )
+        .innerText =
+        "✓ Turn vibration enabled.";
+
+
+      document
+        .getElementById(
+          "alertButton"
+        )
+        .innerText =
+        "✓ Turn Alert Enabled";
+
+    }
+
+
+    const savedSession =
+      localStorage.getItem(
+        "theSalonLabSession"
+      );
+
+
+    if (!savedSession) {
+      return;
+    }
+
+
+    customerId =
+      savedSession;
+
+
+    google.script.run
+
+      .withSuccessHandler(
+        function(data) {
+
+          if (
+            data &&
+            data.found
+          ) {
+
+            showSession(
+              data
+            );
+
+          }
+
+        }
+      )
+
+      .getCustomerStatus(
+        savedSession
+      );
+
+  };
+
+
+// ========================================================
+// ERROR
+// ========================================================
+
+function showError(message) {
+
+  document
+    .getElementById(
+      "error"
+    )
+    .innerText =
+    message || "An error occurred.";
+
+}
+
+</script>
+
+</body>
+
+</html>
